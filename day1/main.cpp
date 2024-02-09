@@ -13,14 +13,31 @@ void replace_blanks(std::vector<std::string>& v)
     }
 }
 
+int max_calories(std::vector<std::string>& v)
+{
+    int largest = 0;
+    int sum = 0;
+    for (int i=0; i!=v.size(); ++i){
+        // if v[i]==x, reset sum
+        // if sum>sum, reset largest
+        if (v[i]=="x"){
+            if (sum>largest){
+                largest = sum;
+            }
+            sum = 0;
+        } else {
+            sum += std::stoi(v[i]);
+        }
+    }
+    return largest;
+}
+
 int main() 
 {
-    std::vector<std::string> v = input_to_vector("test_data1.txt");
-    
+    std::vector<std::string> v = input_to_vector("data.txt");
     replace_blanks(v);
-    
-    for (int i=0; i!=v.size(); ++i){
-        std::cout << v[i] << std::endl;
-    }
+    int res = max_calories(v);
+    std::cout << res << std::endl;
+
     return 0;
 }
