@@ -4,9 +4,9 @@
 #include <vector>
 #include "parser.h"
 
-std::vector<std::string> input_to_vector(std::string filename) {
+std::vector<std::string> input_to_vector(const std::string& filename) {
     // Open the file for reading
-    std::ifstream inputFile("test_data1.txt");
+    std::ifstream inputFile(filename);
 
     // Define a vector to store lines from the file
     std::vector<std::string> lines;
