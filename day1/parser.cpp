@@ -4,7 +4,8 @@
 #include <vector>
 #include "parser.h"
 
-std::vector<std::string> input_to_vector(const std::string& filename) {
+std::vector<std::string> input_to_vector(const std::string& filename) 
+{
     // Open the file for reading
     std::ifstream inputFile(filename);
 
