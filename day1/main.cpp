@@ -18,8 +18,6 @@ int max_calories(std::vector<std::string>& v)
     int largest = 0;
     int sum = 0;
     for (int i=0; i!=v.size(); ++i){
-        // if v[i]==x, reset sum
-        // if sum>sum, reset largest
         if (v[i]=="x"){
             if (sum>largest){
                 largest = sum;
