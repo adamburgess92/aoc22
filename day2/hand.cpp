@@ -11,23 +11,34 @@ void Hand::convert_input(char& s)
     switch(s){
         case 'A':
             s = 'R';
+            break;
         case 'B':
             s = 'P';
+            break;
         case 'C':
             s = 'S';
+            break;
         case 'X':
             s = 'R';
+            break;
         case 'Y':
             s = 'P';
+            break;
         case 'Z':
             s = 'S';
+            break;
     }
 }
 int Hand::calculate_score()
 {
     int score = 0;
+
+    std::cout << "Pre conversion: " << opp << std::endl;
+    std::cout << "Pre conversion: " << you << std::endl;
     convert_input(opp);
     convert_input(you);
+    std::cout << "Post conversion: " << opp << std::endl;
+    std::cout << "Post conversion: " << you << std::endl;
 
     if (you=='R'){
         std::cout << "You have Rock" << std::endl;
