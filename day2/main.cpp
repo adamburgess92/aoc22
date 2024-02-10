@@ -16,7 +16,7 @@ int get_final_score(std::vector<Hand>& v)
 
 int main()
 {
-    std::vector<Hand> d = parse_data("test_data.txt");
+    std::vector<Hand> d = parse_data("data.txt");
     int final_score = get_final_score(d);
     std::cout << final_score << std::endl;
 }
