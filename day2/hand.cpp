@@ -2,27 +2,48 @@
 #include "hand.h"
 
 Hand::Hand(char opp, char you)
-    :opp(opp), you(you)
+    :opp(opp), you(you) 
 {
 }
-char Hand::convert_input(const char s)
+void Hand::convert_input(char& s)
 {
-    char c = s[0];
-    switch(c){
+    switch(s){
         case 'A':
-            return 'R';
+            s = 'R';
         case 'B':
-            return 'P';
+            s = 'P';
         case 'C':
-            return 'S';
-        case ''
-
+            s = 'S';
+        case 'X':
+            s = 'R';
+        case 'Y':
+            s = 'P';
+        case 'Z':
+            s = 'S';
     }
 }
 int Hand::calculate_score()
 {
-    // R, P, S
-    if (opp=="")
-    
+    int score = 0;
+    convert_input(opp);
+    convert_input(you);
+
+    if (you=='R'){
+        score += 1;
+        if (opp=='S'){
+            score += 6;
+        }
+    } else if (you=='P'){
+        score += 2;
+        if (opp=='R'){
+            score += 6;
+        }
+    } else if (you=='S'){
+        score += 3;
+        if (opp=='P'){
+            score += 6;
+        }
+    }
+    return score;    
 }
 
