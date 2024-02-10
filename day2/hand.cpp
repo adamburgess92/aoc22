@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 #include "hand.h"
 
@@ -29,16 +30,19 @@ int Hand::calculate_score()
     convert_input(you);
 
     if (you=='R'){
+        std::cout << "You have Rock" << std::endl;
         score += 1;
         if (opp=='S'){
             score += 6;
         }
     } else if (you=='P'){
+        std::cout << "You have paper" << std::endl;
         score += 2;
         if (opp=='R'){
             score += 6;
         }
     } else if (you=='S'){
+        std::cout << "You have scissors" << std::endl;
         score += 3;
         if (opp=='P'){
             score += 6;
