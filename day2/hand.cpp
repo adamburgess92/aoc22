@@ -32,33 +32,31 @@ void Hand::convert_input(char& s)
 int Hand::calculate_score()
 {
     int score = 0;
-
-    std::cout << "Pre conversion: " << opp << std::endl;
-    std::cout << "Pre conversion: " << you << std::endl;
     convert_input(opp);
     convert_input(you);
-    std::cout << "Post conversion: " << opp << std::endl;
-    std::cout << "Post conversion: " << you << std::endl;
-
+    // Logic:
     if (you=='R'){
-        std::cout << "You have Rock" << std::endl;
         score += 1;
         if (opp=='S'){
             score += 6;
+        } else if (opp=='R'){
+            score += 3;
         }
     } else if (you=='P'){
-        std::cout << "You have paper" << std::endl;
         score += 2;
         if (opp=='R'){
             score += 6;
+        } else if (opp=='P'){
+            score += 3;
         }
     } else if (you=='S'){
-        std::cout << "You have scissors" << std::endl;
         score += 3;
         if (opp=='P'){
             score += 6;
+        } else if (opp=='S'){
+            score += 3;
         }
     }
-    return score;    
+    return score;
 }
 
