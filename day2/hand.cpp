@@ -59,4 +59,68 @@ int Hand::calculate_score()
     }
     return score;
 }
+// Part 2:
+void Hand::convert_input_2(char& s)
+{
+    switch(s){
+        case 'A':
+            s = 'R';
+            break;
+        case 'B':
+            s = 'P';
+            break;
+        case 'C':
+            s = 'S';
+            break;
+        case 'X':
+            s = 'L';
+            break;
+        case 'Y':
+            s = 'D';
+            break;
+        case 'Z':
+            s = 'W';
+            break;
+    }
+}
+int Hand::calculate_score_2()
+{
+    int score = 0;
+    convert_input_2(opp);
+    convert_input_2(you);
+    // Logic:
+    if (you=='W'){
+        score += 6;
+        // you hand needs to beat opp hand
+        if (opp=='R'){ // you must be paper
+            score += 2;
+        } else if (opp=='P'){ // you must be scissors
+            score += 3;
+        } else if (opp='S'){ // you must be rock
+            score += 1;
+        }
+    } else if (you=='D'){
+        score += 3;
+        // you hand needs to match opp hand
+        if (opp=='R'){ // you must be rock
+            score += 1;
+        } else if (opp=='P'){ // you must be paper
+            score += 2;
+        } else if (opp='S'){ // you must be scissors
+            score += 3;
+        }
+        
+    } else if (you=='L'){
+        score += 0;
+        // you hand needs to lose to opp hand
+        if (opp=='R'){ // you must be scissors
+            score += 3;
+        } else if (opp=='P'){ // you must be rock
+            score += 1;
+        } else if (opp='S'){ // you must be paper
+            score += 2;
+        }
+    }
+    return score;
+}
 

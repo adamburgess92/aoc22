@@ -5,6 +5,9 @@ public:
     Hand(char opp, char you);
     void convert_input(char& s);
     int calculate_score();
+    // Part 2
+    void convert_input_2(char& s);
+    int calculate_score_2();
 private:
     char opp;
     char you;
