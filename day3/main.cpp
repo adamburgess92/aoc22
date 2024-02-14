@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <unordered_map>
 #include "parser.h"
 
 std::vector<std::vector<std::string> > split_compartments(std::vector<std::string>& v)
@@ -43,6 +44,24 @@ std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v)
     return v_out;
 }
 
+
+
+std::vector<int> char_to_int(std::vector<char> v)
+{
+    std::unordered_map<char, int> char_map;
+
+    for (char c='a'; c<='z'; ++c){
+        std::cout << c << std::endl;
+        char_map[c] = l;
+        ++l;
+    }
+    std::vector<int> v_out;
+    for (int i:v){
+        v_out.push_back(char_map[v[i]]);
+    }
+    return v_out;
+}
+
 int main() 
 {
 
@@ -50,11 +69,12 @@ int main()
     std::vector<std::string> d = parse_data("test_data.txt");
     std::vector<std::vector<std::string>> split = split_compartments(d);
     std::vector<char> common = get_common_item(split);
+    std::vector<int> int_rep = char_to_int(common);
 
 
 
-    for (int i=0; i!=common.size(); ++i){
-        std::cout << common[i] << std::endl;
+    for (int i=0; i!=int_rep.size(); ++i){
+        std::cout << int_rep[i] << std::endl;
     }
 
 }
