@@ -2,9 +2,9 @@
 #include <iostream>
 #include "parser.h"
 
-std::vector<std::vector<std::string>> split_compartments(std::vector<std::string>& v)
+std::vector<std::vector<std::string> > split_compartments(std::vector<std::string>& v)
 {
-    std::vector<std::vector<std::string>> v_out;
+    std::vector<std::vector<std::string> > v_out;
     
     for (int i=0; i!=v.size(); ++i){
         int l = v[i].size();
@@ -16,38 +16,42 @@ std::vector<std::vector<std::string>> split_compartments(std::vector<std::string
     return v_out;
 }
 
-std::vector<char> get_common_item(std::vector<std::vector<std::string>>& v) 
+std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v) 
 {
     std::vector<char> v_out;
-    // Length of each 'subvector'
+    // Loop through: 
     for (int i=0; i!=v.size(); ++i){
-        for (int j=0; j!=v[i].size(); ++j){
-            for(int k=0; k!=v[i][j].size(); ++k){
-                if (v[i][0][j]==v[i][1][k]){
-                    v_out.push_back(v[i][0][j]);
+        std::string comp1 = v[i][0]; // Compartment 1
+        std::string comp2 = v[i][1]; // Compartment 2
+        // std::cout << comp1 << " " << comp2 << std::endl;
+
+        for (int j=0; j!=comp1.size(); ++j){
+            bool match = false;
+            for (int k=0; k!=comp2.size(); ++k){
+                if (comp1[j] == comp2[k]) {
+                    v_out.push_back(comp1[j]);
+                    // std::cout << comp1[j] << std::endl;
+                    match = true;
+                    break;
                 }
+            }
+            if (match) {
+                break;
             }
         }
     }
     return v_out;
 }
 
-// int get_priority(const char& c)
-// int sum_priorties
-
-
-int main() {
-
-    // for (int i=0; i!=d.size(); ++i){
-    //     std::cout << d[i] << std::endl;
-    //     std::cout << d[i].size() << std::endl;
-    // }
-
+int main() 
+{
 
     // Scratch: 
     std::vector<std::string> d = parse_data("test_data.txt");
     std::vector<std::vector<std::string>> split = split_compartments(d);
     std::vector<char> common = get_common_item(split);
+
+
 
     for (int i=0; i!=common.size(); ++i){
         std::cout << common[i] << std::endl;
