@@ -116,14 +116,14 @@ std::vector<std::vector<std::string>> triplets(std::vector<std::string>& v)
     return v_out; // should have size() 1/3x v
 }
 
-std::vector<std::vector<char>> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
+std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
 // std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
 {
     // Need to find common distinct common elements between v[i][0] and v[i][1] -> vector[string]
     // Once we have that, traverse that vector against v[i][2] -> char
     // [[..., ..., ...], [..., ..., ...]]
     // std::vector<char> v_out;
-    std::vector<std::vector<char>> v_out;
+    std::vector<char> v_out;
     std::vector<char> first_matches;
 
 
@@ -137,15 +137,32 @@ std::vector<std::vector<char>> get_common_from_triplet(std::vector<std::vector<s
                 if (comp1[j]==comp2[k]) {
                     first_matches.push_back(comp1[j]);
                 }
-
             }
         }
         // Now we have the first matches only keep unique values:
         std::sort(first_matches.begin(), first_matches.end());
         std::vector<char>::iterator it = std::unique(first_matches.begin(), first_matches.end());
         first_matches.resize(std::distance(first_matches.begin(), it));
-        v_out.push_back(first_matches);
-        first_matches.clear();
+
+        // for (int z=0; z!=first_matches.size(); ++z){
+        //     std::cout << first_matches[z] << std::endl;
+        // }
+
+        // Search comp3 for things in first_matches:
+        bool match = false;
+        for (int l=0; l!=first_matches.size(); ++l){
+            for (int m=0; m!=comp3.size(); ++m){
+                if (first_matches[l]==comp3[m]){
+                    match = true;
+                    v_out.push_back(first_matches[l]);
+                    first_matches.clear();
+                    break;
+                }
+            }
+            if (match){
+                break;
+            }
+        }
     }
     return v_out;
 }
@@ -166,17 +183,20 @@ int main()
     // Part 2:
     std::vector<std::string> d = parse_data("test_data.txt");
     std::vector<std::vector<std::string>> trips = triplets(d);
-    std::vector<std::vector<char>> c = get_common_from_triplet(trips);
+    std::vector<char> c = get_common_from_triplet(trips);
+    std::vector<int> scores = char_to_int(c);
+    int final_score = sum_scores(scores);
+    std::cout << final_score << std::endl;
+
 
     // std::vector<std::string> first_element = trips[1];
     // for (int i=0; i!=first_element.size(); ++i){
     //     std::cout << first_element[i] << std::endl;
     // }
 
-    std::vector<char> first_element = c[1];
-    for (int i=0; i!=first_element.size(); ++i){
-        std::cout << first_element[i] << std::endl;
-    }
+    // for (int i=0; i!=c.size(); ++i){
+    //     std::cout << c[i] << std::endl;
+    // }
 
 
 }
