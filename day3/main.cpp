@@ -65,35 +65,38 @@ std::unordered_map<char, int> generate_map()
     return m;
 }
 
-
-
 std::vector<int> char_to_int(std::vector<char> v)
 {
-    std::unordered_map<char, int> char_map;
-
-    for (char c='a'; c<='z'; ++c){
-
-    }
     std::vector<int> v_out;
-    for (int i:v){
-        v_out.push_back(char_map[v[i]]);
+    // Generate map
+    std::unordered_map<char, int> m = generate_map();
+    for (int i=0; i!=v.size(); ++i){
+        v_out.push_back(m[v[i]]);
     }
     return v_out;
+}
+
+int sum_scores(std::vector<int>& v)
+{
+    int sum  = 0;
+    for (int i=0; i!=v.size(); ++i){
+        sum += v[i];
+    }
+    return sum;
 }
 
 int main()
 {
 
     // Scratch:
-    // std::vector<std::string> d = parse_data("test_data.txt");
-    // std::vector<std::vector<std::string>> split = split_compartments(d);
-    // std::vector<char> common = get_common_item(split);
-    // std::vector<int> int_rep = char_to_int(common);
+    std::vector<std::string> d = parse_data("test_data.txt");
+    std::vector<std::vector<std::string>> split = split_compartments(d);
+    std::vector<char> common = get_common_item(split);
+    std::vector<int> scores = char_to_int(common);
+    int final_score = sum_scores(scores);
+    std::cout << final_score << std::endl;
 
-    auto m = generate_map();
-
-    for (const auto& pair: m) {
-        std::cout << pair.first << ":" << pair.second << std::endl;
-    }
-
+    // for (int i=0; i!=scores.size(); ++i){
+    //     std::cout << scores[i] << std::endl;
+    // }
 }
