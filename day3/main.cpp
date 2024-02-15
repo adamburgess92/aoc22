@@ -3,9 +3,9 @@
 #include <unordered_map>
 #include "parser.h"
 
-std::vector<std::vector<std::string> > split_compartments(std::vector<std::string>& v)
+std::vector<std::vector<std::string>> split_compartments(std::vector<std::string>& v)
 {
-    std::vector<std::vector<std::string> > v_out;
+    std::vector<std::vector<std::string>> v_out;
 
     for (int i=0; i!=v.size(); ++i){
         int l = v[i].size();
@@ -17,7 +17,7 @@ std::vector<std::vector<std::string> > split_compartments(std::vector<std::strin
     return v_out;
 }
 
-std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v)
+std::vector<char> get_common_item(std::vector<std::vector<std::string>>& v)
 {
     std::vector<char> v_out;
     // Loop through:
@@ -85,18 +85,48 @@ int sum_scores(std::vector<int>& v)
     return sum;
 }
 
-int main()
+// std::vector<std::vector<std::string>> create_triplets(std::vector<std::string>& v)
+// {
+//     std::vector<std::vector<std::string>> v_out;
+//    // v_out should have length 1/3 of v
+// }
+
+
+void triplets(std::vector<std::string>& v)
 {
 
-    // Scratch:
-    std::vector<std::string> d = parse_data("test_data.txt");
-    std::vector<std::vector<std::string>> split = split_compartments(d);
-    std::vector<char> common = get_common_item(split);
-    std::vector<int> scores = char_to_int(common);
-    int final_score = sum_scores(scores);
-    std::cout << final_score << std::endl;
+    std::vector<std::vector<std::string>> v_out;
 
-    // for (int i=0; i!=scores.size(); ++i){
-    //     std::cout << scores[i] << std::endl;
-    // }
+    int trip = 0;
+    for (int i=0; i!=v.size(); ++i){
+        std::cout << "i: " << i << std::endl;
+        std::cout << "trip: " << trip << std::endl;
+        ++trip;
+        // Push to subvectors
+        if (trip%3==0){
+            // Reset trip:
+            trip=0;
+            // Push subvectors to v_out
+        }
+    }
+}
+
+
+int main()
+{
+    // // Part 1:
+    // std::vector<std::string> d = parse_data("data.txt");
+    // std::vector<std::vector<std::string>> split = split_compartments(d);
+    // std::vector<char> common = get_common_item(split);
+    // std::vector<int> scores = char_to_int(common);
+    // int final_score = sum_scores(scores);
+    // std::cout << final_score << std::endl;
+
+    // Part 2:
+    std::vector<std::string> d = parse_data("test_data.txt");
+    triplets(d);
+
+
+
+
 }
