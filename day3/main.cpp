@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <vector>
 #include <iostream>
 #include <unordered_map>
@@ -115,6 +116,42 @@ std::vector<std::vector<std::string>> triplets(std::vector<std::string>& v)
     return v_out; // should have size() 1/3x v
 }
 
+std::vector<std::vector<char>> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
+// std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
+{
+    // Need to find common distinct common elements between v[i][0] and v[i][1] -> vector[string]
+    // Once we have that, traverse that vector against v[i][2] -> char
+    // [[..., ..., ...], [..., ..., ...]]
+    // std::vector<char> v_out;
+    std::vector<std::vector<char>> v_out;
+    std::vector<char> first_matches;
+
+
+    for (int i=0; i!=v.size(); ++i){
+        std::string comp1 = v[i][0]; // Compartment 1
+        std::string comp2 = v[i][1]; // Compartment 2
+        std::string comp3 = v[i][2]; // Compartment 3
+
+        for (int j=0; j!=comp1.size(); ++j) {
+            for (int k=0; k!=comp2.size(); ++k) {
+                if (comp1[j]==comp2[k]) {
+                    first_matches.push_back(comp1[j]);
+                }
+
+            }
+        }
+        // Now we have the first matches only keep unique values:
+        std::sort(first_matches.begin(), first_matches.end());
+        std::vector<char>::iterator it = std::unique(first_matches.begin(), first_matches.end());
+        first_matches.resize(std::distance(first_matches.begin(), it));
+        v_out.push_back(first_matches);
+
+    }
+    return v_out;
+}
+
+
+
 
 int main()
 {
@@ -129,8 +166,9 @@ int main()
     // Part 2:
     std::vector<std::string> d = parse_data("test_data.txt");
     std::vector<std::vector<std::string>> trips = triplets(d);
+    std::vector<std::vector<char>> c = get_common_from_triplet(trips);
 
-    std::vector<std::string> first_element = trips[0];
+    std::vector<char> first_element = c[1];
     for (int i=0; i!=first_element.size(); ++i){
         std::cout << first_element[i] << std::endl;
     }
