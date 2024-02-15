@@ -145,7 +145,7 @@ std::vector<std::vector<char>> get_common_from_triplet(std::vector<std::vector<s
         std::vector<char>::iterator it = std::unique(first_matches.begin(), first_matches.end());
         first_matches.resize(std::distance(first_matches.begin(), it));
         v_out.push_back(first_matches);
-
+        first_matches.clear();
     }
     return v_out;
 }
@@ -167,6 +167,11 @@ int main()
     std::vector<std::string> d = parse_data("test_data.txt");
     std::vector<std::vector<std::string>> trips = triplets(d);
     std::vector<std::vector<char>> c = get_common_from_triplet(trips);
+
+    // std::vector<std::string> first_element = trips[1];
+    // for (int i=0; i!=first_element.size(); ++i){
+    //     std::cout << first_element[i] << std::endl;
+    // }
 
     std::vector<char> first_element = c[1];
     for (int i=0; i!=first_element.size(); ++i){
