@@ -25,14 +25,11 @@ std::vector<char> get_common_item(std::vector<std::vector<std::string>>& v)
     for (int i=0; i!=v.size(); ++i){
         std::string comp1 = v[i][0]; // Compartment 1
         std::string comp2 = v[i][1]; // Compartment 2
-        // std::cout << comp1 << " " << comp2 << std::endl;
-
         for (int j=0; j!=comp1.size(); ++j){
             bool match = false;
             for (int k=0; k!=comp2.size(); ++k){
                 if (comp1[j] == comp2[k]) {
                     v_out.push_back(comp1[j]);
-                    // std::cout << comp1[j] << std::endl;
                     match = true;
                     break;
                 }
@@ -86,14 +83,7 @@ int sum_scores(std::vector<int>& v)
     return sum;
 }
 
-// std::vector<std::vector<std::string>> create_triplets(std::vector<std::string>& v)
-// {
-//     std::vector<std::vector<std::string>> v_out;
-//    // v_out should have length 1/3 of v
-// }
-
-
-std::vector<std::vector<std::string>> triplets(std::vector<std::string>& v)
+std::vector<std::vector<std::string>> create_triplets(std::vector<std::string>& v)
 {
     std::vector<std::vector<std::string>> v_out;
     std::vector<std::string> subvec;
@@ -117,16 +107,13 @@ std::vector<std::vector<std::string>> triplets(std::vector<std::string>& v)
 }
 
 std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
-// std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>& v)
 {
+    // Input (v) has shape: [[..., ..., ...], [..., ..., ...]]
     // Need to find common distinct common elements between v[i][0] and v[i][1] -> vector[string]
     // Once we have that, traverse that vector against v[i][2] -> char
-    // [[..., ..., ...], [..., ..., ...]]
     // std::vector<char> v_out;
     std::vector<char> v_out;
     std::vector<char> first_matches;
-
-
     for (int i=0; i!=v.size(); ++i){
         std::string comp1 = v[i][0]; // Compartment 1
         std::string comp2 = v[i][1]; // Compartment 2
@@ -143,11 +130,6 @@ std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>&
         std::sort(first_matches.begin(), first_matches.end());
         std::vector<char>::iterator it = std::unique(first_matches.begin(), first_matches.end());
         first_matches.resize(std::distance(first_matches.begin(), it));
-
-        // for (int z=0; z!=first_matches.size(); ++z){
-        //     std::cout << first_matches[z] << std::endl;
-        // }
-
         // Search comp3 for things in first_matches:
         bool match = false;
         for (int l=0; l!=first_matches.size(); ++l){
@@ -167,9 +149,6 @@ std::vector<char> get_common_from_triplet(std::vector<std::vector<std::string>>&
     return v_out;
 }
 
-
-
-
 int main()
 {
     // // Part 1:
@@ -181,22 +160,10 @@ int main()
     // std::cout << final_score << std::endl;
 
     // Part 2:
-    std::vector<std::string> d = parse_data("test_data.txt");
-    std::vector<std::vector<std::string>> trips = triplets(d);
+    std::vector<std::string> d = parse_data("data.txt");
+    std::vector<std::vector<std::string>> trips = create_triplets(d);
     std::vector<char> c = get_common_from_triplet(trips);
     std::vector<int> scores = char_to_int(c);
     int final_score = sum_scores(scores);
     std::cout << final_score << std::endl;
-
-
-    // std::vector<std::string> first_element = trips[1];
-    // for (int i=0; i!=first_element.size(); ++i){
-    //     std::cout << first_element[i] << std::endl;
-    // }
-
-    // for (int i=0; i!=c.size(); ++i){
-    //     std::cout << c[i] << std::endl;
-    // }
-
-
 }
