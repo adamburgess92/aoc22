@@ -6,7 +6,7 @@
 std::vector<std::vector<std::string> > split_compartments(std::vector<std::string>& v)
 {
     std::vector<std::vector<std::string> > v_out;
-    
+
     for (int i=0; i!=v.size(); ++i){
         int l = v[i].size();
         std::string first_compartment = v[i].substr(0, l/2);
@@ -17,10 +17,10 @@ std::vector<std::vector<std::string> > split_compartments(std::vector<std::strin
     return v_out;
 }
 
-std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v) 
+std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v)
 {
     std::vector<char> v_out;
-    // Loop through: 
+    // Loop through:
     for (int i=0; i!=v.size(); ++i){
         std::string comp1 = v[i][0]; // Compartment 1
         std::string comp2 = v[i][1]; // Compartment 2
@@ -44,6 +44,27 @@ std::vector<char> get_common_item(std::vector<std::vector<std::string> >& v)
     return v_out;
 }
 
+std::unordered_map<char, int> generate_map()
+{
+    // Declare map - lower
+    std::unordered_map<char, int> m;
+    // Lower case
+    for (char l='a'; l<='z'; ++l){
+        int i = l - 'a' +1;
+        m[l] = i;
+    }
+    // Declare map - upper
+    std::unordered_map<char, int> n;
+    // Upper case:
+    for (char u='A'; u<='Z'; ++u){
+        int j = u - 'A' + 26 + 1;
+        n[u] = j;
+    }
+    // Combine maps
+    m.insert(n.begin(), n.end());
+    return m;
+}
+
 
 
 std::vector<int> char_to_int(std::vector<char> v)
@@ -51,9 +72,7 @@ std::vector<int> char_to_int(std::vector<char> v)
     std::unordered_map<char, int> char_map;
 
     for (char c='a'; c<='z'; ++c){
-        std::cout << c << std::endl;
-        char_map[c] = l;
-        ++l;
+
     }
     std::vector<int> v_out;
     for (int i:v){
@@ -62,19 +81,19 @@ std::vector<int> char_to_int(std::vector<char> v)
     return v_out;
 }
 
-int main() 
+int main()
 {
 
-    // Scratch: 
-    std::vector<std::string> d = parse_data("test_data.txt");
-    std::vector<std::vector<std::string>> split = split_compartments(d);
-    std::vector<char> common = get_common_item(split);
-    std::vector<int> int_rep = char_to_int(common);
+    // Scratch:
+    // std::vector<std::string> d = parse_data("test_data.txt");
+    // std::vector<std::vector<std::string>> split = split_compartments(d);
+    // std::vector<char> common = get_common_item(split);
+    // std::vector<int> int_rep = char_to_int(common);
 
+    auto m = generate_map();
 
-
-    for (int i=0; i!=int_rep.size(); ++i){
-        std::cout << int_rep[i] << std::endl;
+    for (const auto& pair: m) {
+        std::cout << pair.first << ":" << pair.second << std::endl;
     }
 
 }
