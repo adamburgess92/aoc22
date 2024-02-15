@@ -92,23 +92,27 @@ int sum_scores(std::vector<int>& v)
 // }
 
 
-void triplets(std::vector<std::string>& v)
+std::vector<std::vector<std::string>> triplets(std::vector<std::string>& v)
 {
-
     std::vector<std::vector<std::string>> v_out;
-
+    std::vector<std::string> subvec;
     int trip = 0;
     for (int i=0; i!=v.size(); ++i){
-        std::cout << "i: " << i << std::endl;
-        std::cout << "trip: " << trip << std::endl;
+        // std::cout << "i: " << i << std::endl;
+        // std::cout << "trip: " << trip << std::endl;
         ++trip;
         // Push to subvectors
+        subvec.push_back(v[i]);
         if (trip%3==0){
-            // Reset trip:
+            // Reset triplet counter:
             trip=0;
             // Push subvectors to v_out
+            v_out.push_back(subvec);
+            // Reset subvectors
+            subvec.clear();
         }
     }
+    return v_out; // should have size() 1/3x v
 }
 
 
@@ -124,9 +128,12 @@ int main()
 
     // Part 2:
     std::vector<std::string> d = parse_data("test_data.txt");
-    triplets(d);
+    std::vector<std::vector<std::string>> trips = triplets(d);
 
-
+    std::vector<std::string> first_element = trips[0];
+    for (int i=0; i!=first_element.size(); ++i){
+        std::cout << first_element[i] << std::endl;
+    }
 
 
 }
