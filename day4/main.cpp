@@ -51,24 +51,42 @@ std::vector<std::unordered_map<std::string, int>> convert_data_to_maps(std::vect
 
 int check_duplicated(std::unordered_map<std::string, int>& m)
 {
-    int score = 0;
     // Check if elf 1's work is a subset of elf 2's work
     if ((m["elf1_start"]>=m["elf2_start"]) && (m["elf1_end"]<=m["elf2_end"])){
-        score += 1;
+        return 1;
+    } else if ((m["elf2_start"]>=m["elf1_start"]) && (m["elf2_end"]<=m["elf1_end"])){
+        return 1;
+    } else {
+        return 0;
     }
-    if ((m["elf2_start"]>=m["elf1_start"]) && (m["elf2_end"]<=m["elf1_end"])){
-        score += 1;
+}
+
+int check_duplicated_part2(std::unordered_map<std::string, int>& m)
+{
+    for (int i=m["elf1_start"]; i<=m["elf1_end"]; ++i){
+        for (int j=m["elf2_start"]; j<=m["elf2_end"]; ++j){
+            if (i==j){
+                return 1;
+            }
+        }
     }
-    return score;
+    return 0;
 }
 
 int sum_all_duplicated(std::vector<std::unordered_map<std::string, int>>& d)
 {
     int score = 0;
     for (int i=0; i!=d.size(); ++i){
-        if (check_duplicated(d[i])==1){
-            score+=1;
-        }
+        score+=check_duplicated(d[i]);
+    }
+    return score;
+}
+
+int sum_all_duplicated_part2(std::vector<std::unordered_map<std::string, int>>& d)
+{
+    int score = 0;
+    for (int i=0; i!=d.size(); ++i){
+        score+=check_duplicated_part2(d[i]);
     }
     return score;
 }
@@ -76,9 +94,16 @@ int sum_all_duplicated(std::vector<std::unordered_map<std::string, int>>& d)
 //In how many assignment pairs does one range fully contain the other?
 int main()
 {
-    std::vector<std::string> d = parse_data("test_data.txt");
+    // Part 1:
+    // std::vector<std::string> d = parse_data("data.txt");
+    // std::vector<std::unordered_map<std::string, int>> m = convert_data_to_maps(d);
+    // int res = sum_all_duplicated(m);
+    // std::cout << res << std::endl;
+
+    // Part 2:
+    std::vector<std::string> d = parse_data("data.txt");
     std::vector<std::unordered_map<std::string, int>> m = convert_data_to_maps(d);
-    int res = sum_all_duplicated(m);
+    int res = sum_all_duplicated_part2(m);
     std::cout << res << std::endl;
 
 }
