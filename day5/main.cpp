@@ -41,7 +41,7 @@ std::unordered_map<std::string, int> move_instructions(std::string& s)
     return m;
 }
 
-void perform_movement(std::unordered_map<int, std::stack<char>>& crates, std::unordered_map<std::string, int>& moves)
+void perform_movement(std::unordered_map<int, std::stack<char>>& crates, std::unordered_map<std::string, int> moves)
 {
     for (int i=1; i<=moves["num_move"]; ++i){
         char top = crates[moves["from"]].top();
@@ -52,11 +52,6 @@ void perform_movement(std::unordered_map<int, std::stack<char>>& crates, std::un
 
 int main() {
     // Too lazy to build parser for weird data...
-    // std::unordered_map<int, std::vector<char>> m;
-    // m[1] = {'N', 'Z'};
-    // m[2] = {'M', 'C', 'D'};
-    // m[3] = {'P'};
-
     std::unordered_map<int, std::stack<char>> m;
     m[1].push('Z');
     m[1].push('N');
@@ -69,21 +64,25 @@ int main() {
 
     // Load moves:
     std::vector<std::string> d = parse_data("test_moves.txt");
-    auto t = d[0];
-    std::unordered_map<std::string, int> instructions = move_instructions(t);
-    perform_movement(m, instructions);
-
+    std::unordered_map<std::string, int> instructions;
+    for (int i=0; i!=d.size(); ++i){
+        std::cout << d[i] << std::endl;
+        instructions = move_instructions(d[i]);
+        perform_movement(m, instructions);
+    }
     while (!m[1].empty()) {
         std::cout << m[1].top() << std::endl;
         m[1].pop();
     }
-
     std::cout << "~~~~~" << std::endl;
-
     while (!m[2].empty()) {
         std::cout << m[2].top() << std::endl;
         m[2].pop();
     }
-
+    std::cout << "~~~~~" << std::endl;
+    while (!m[3].empty()) {
+        std::cout << m[3].top() << std::endl;
+        m[3].pop();
+    }
 }
 
