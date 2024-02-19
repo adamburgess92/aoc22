@@ -43,16 +43,10 @@ std::unordered_map<std::string, int> move_instructions(std::string& s)
 
 void perform_movement(std::unordered_map<int, std::stack<char>>& crates, std::unordered_map<std::string, int>& moves)
 {
-    // Pick crates up
-    std::vector<char> crates_to_move;
-    for (int i=0; i<=moves["num_move"]; ++i){
+    for (int i=1; i<=moves["num_move"]; ++i){
         char top = crates[moves["from"]].top();
-        crates_to_move.push_back(top);
         crates[moves["from"]].pop();
-    }
-    // Put crates down...
-    for (int j=crates_to_move.size(); j>=0; --j){
-        crates[moves["to"]].push(crates_to_move[j]);
+        crates[moves["to"]].push(top);
     }
 }
 
@@ -64,8 +58,8 @@ int main() {
     // m[3] = {'P'};
 
     std::unordered_map<int, std::stack<char>> m;
-    m[1].push('N');
     m[1].push('Z');
+    m[1].push('N');
 
     m[2].push('M');
     m[2].push('C');
@@ -75,12 +69,21 @@ int main() {
 
     // Load moves:
     std::vector<std::string> d = parse_data("test_moves.txt");
+    auto t = d[0];
+    std::unordered_map<std::string, int> instructions = move_instructions(t);
+    perform_movement(m, instructions);
 
-    for (int i=0; i<=d.size(); ++i){
-        std::unordered_map<std::string, int> moves = move_instructions(d[i]);
-        perform_movement(m, moves);
+    while (!m[1].empty()) {
+        std::cout << m[1].top() << std::endl;
+        m[1].pop();
     }
 
+    std::cout << "~~~~~" << std::endl;
+
+    while (!m[2].empty()) {
+        std::cout << m[2].top() << std::endl;
+        m[2].pop();
+    }
 
 }
 
