@@ -7,7 +7,7 @@
 
 class Device {
 public:
-    Device(std::string s_in) : input_string(s_in), counter(0), target(3) {next();};
+    Device(std::string s_in) : input_string(s_in), counter(0), target(13) {next();};
     std::vector<char> current_four;
     std::string input_string;
     int counter;
@@ -16,7 +16,7 @@ public:
     {
         // Get 4 characters from input string from counter to counter+4, increment counter
         std::vector<char> v_out;
-        std::string fourstring = input_string.substr(counter, 4);
+        std::string fourstring = input_string.substr(counter, 14);
         for (int i=0; i!=fourstring.size(); ++i){
             v_out.push_back(fourstring[i]);
         }
@@ -56,5 +56,6 @@ int main() {
             break;
         }
     }
+    // 1531 is the answer
 }
 
