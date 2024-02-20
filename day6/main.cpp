@@ -40,16 +40,14 @@ public:
 int main() {
     std::vector<std::string> data = parse_data("data.txt");
     std::string t = data[0];
-    std::cout << t << std::endl;
 
-    //testing
-    std::string t1 = "bvwbjplbgvbhsrlpgdmjqwftvncz";
-    std::string t2 = "nppdvjthqldpwncqszvftbrmjlhg";
-    std::string t3 = "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg";
-    std::string t4 = "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw";
+    // // Test cases
+    // std::string t1 = "bvwbjplbgvbhsrlpgdmjqwftvncz";
+    // std::string t2 = "nppdvjthqldpwncqszvftbrmjlhg";
+    // std::string t3 = "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg";
+    // std::string t4 = "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw";
 
-    Device d(t4);
-
+    Device d(t);
     for (int i=0; i!=d.input_string.size(); ++i){
         if (d.contains_dupes()){
             d.next();
@@ -58,17 +56,5 @@ int main() {
             break;
         }
     }
-
-
-    // for (int i=0; i!=d.current_four.size(); ++i){
-    //     std::cout << d.current_four[i] << std::endl;
-    // }
-    // std::cout << d.contains_dupes() << std::endl;
-    // d.next();
-    // std::cout << "next() called" << std::endl;
-    // for (int i=0; i!=d.current_four.size(); ++i){
-    //     std::cout << d.current_four[i] << std::endl;
-    // }
-    // std::cout << d.contains_dupes() << std::endl;
 }
 
