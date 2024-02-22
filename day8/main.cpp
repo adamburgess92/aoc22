@@ -22,24 +22,23 @@ int count_larger(int current_tree, std::vector<int>& v)
 
 void count_visible(std::vector<std::vector<int> >& v) 
 {
-    // // Count outer
-    // int outer_sum = 0;
-    // // Count outer
-    // for (int i=0; i<v.size(); ++i){
-    //     for (int j=0; j<v[0].size(); ++j){
-    //         if (i==0 || i==v.size()-1 || j==0 || j==v[0].size()-1){
-    //             ++outer_sum;
-    //         }
-    //     }
-    // }
+    // Count outer
+    int outer_sum = 0;
+    // Count outer
+    for (int i=0; i<v.size(); ++i){
+        for (int j=0; j<v[0].size(); ++j){
+            if (i==0 || i==v.size()-1 || j==0 || j==v[0].size()-1){
+                ++outer_sum;
+            }
+        }
+    }
 
     // Count inner: 
     int inner_sum = 0;
-    for (int i=0; i!=v.size(); ++i){
-        for (int j=0; j!=v[0].size(); ++j){
-            // std::cout << "Row: " << i << std::endl;
-            // std::cout << "Col: " << j << std::endl;
-            // Build vectors of trees between current location and boundary
+    for (int i=1; i!=v.size()-1; ++i){
+        for (int j=1; j!=v[0].size()-1; ++j){
+            std::cout << "row: " << i << std::endl;
+            std::cout << "col: " << j << std::endl; 
             // Left
             std::vector<int> left(v[i].begin(), v[i].begin()+j);
             // Right
@@ -54,15 +53,15 @@ void count_visible(std::vector<std::vector<int> >& v)
             // Below
             std::vector<int> below;
             if (i<v.size()-1){
-                for (int l=i; l<v.size(); ++l){
+                for (int l=i+1; l<v.size(); ++l){
                     below.push_back(v[l][j]);
                 }
             } 
 
             // // Debug: 
-            // std::cout << "Right" << std::endl;
-            // for (int b=0; b<right.size(); ++b){
-            //     std::cout << right[b] << std::endl;
+            // std::cout << "Below" << std::endl;
+            // for (int b=0; b<below.size(); ++b){
+            //     std::cout << below[b] << std::endl;
             // }
 
             // If any of the below == 0, then the tree is visible from the outside
@@ -72,36 +71,27 @@ void count_visible(std::vector<std::vector<int> >& v)
             int n_above = count_larger(v[i][j], above);
             int n_below = count_larger(v[i][j], below);
 
-            // //Debug
-            // std::cout << "n_left: " << n_left << std::endl;
-            // std::cout << "n_right: " << n_right << std::endl;
-            // std::cout << "n_above: " << n_above << std::endl;
-            // std::cout << "n_below: " << n_below << std::endl;
-
-            // int inner_sum = inner_sum + n_left + n_right + n_above + n_below;
-            // if (n_left==0 && n_right==0 && n_above==0 && n_below==0){
-            //     ++inner_sum;
-            // } 
-            if  (i==0 || i==v.size()-1 || j==0 || j==v[0].size()-1){
-                // Edge
-                ++inner_sum;
-                std::cout << "Visible - Edge" << std::endl;
-            } else if (n_left==0 || n_right==0 || n_above==0 || n_below==0){
+            if (n_left==0 || n_right==0 || n_above==0 || n_below==0){
                 ++inner_sum;
                 std::cout << "Visible - Inner" << std::endl;
             } else {
                 std::cout << "Invisible" << std::endl;
             }
+            left.clear();
+            right.clear();
+            above.clear();
+            below.clear();
         }
-    }    
-    // std::cout << "Outer: " << outer_sum << std::endl;
-    std::cout << "No. visible: " << inner_sum << std::endl;
+    }
+    std::cout << "Outer: " << outer_sum << std::endl;
+    std::cout << "Inner: " << inner_sum << std::endl;
+    int total = outer_sum + inner_sum;
+    std::cout << "Total: " << total << std::endl;
+
 }
 
 int main()
 {
     std::vector<std::vector<int> > data = parse_data("data.txt");
     count_visible(data);
-
-
 }
