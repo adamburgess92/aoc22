@@ -8,10 +8,15 @@
 
 int main()
 {
-    std::vector<std::string> d = parse_data("tiny_data.txt");
+    std::vector<std::string> d = parse_data("test_data.txt");
     Register r = Register();
     for (int i=0; i<d.size(); ++i){
-        r.process_command(d[i]);
+        r.build_queue(d[i]);
 
     }
+    // for (const auto& pair : r.queued_instructions) {
+    //     std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
+    // }
+    r.execute_queue();
+
 }

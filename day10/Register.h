@@ -7,5 +7,6 @@ public:
     int cycle;
     int X;
     std::unordered_map<int, int> queued_instructions;
-    void process_command(const std::string& s);
+    void build_queue(const std::string& s);
+    void execute_queue();
 };

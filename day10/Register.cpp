@@ -2,45 +2,34 @@
 #include <sstream>
 #include "Register.h"
 
-Register::Register(): cycle(0), X(1) {};
-void Register::process_command(const std::string&s)
+Register::Register(): cycle(1), X(1) {};
+void Register::build_queue(const std::string&s)
 {
-    std::cout << "Cycle: " << cycle << std::endl;
-    std::cout << "Start X: " << X << std::endl;
-
-    // Command is going to look something like "addx 15", "noop"
+    // Update Queued instructions
     std::string cmd_type = s.substr(0,4);
-
+    if (cmd_type=="noop"){
+        queued_instructions.emplace(cycle, 0);
+        cycle += 1;
+    }
     if (cmd_type=="addx"){
         // Get the int:
         std::stringstream ss(s);
         std::string token;
         std::vector<std::string> tokens;
-
         while (std::getline(ss, token, ' ')){
             tokens.push_back(token);
         }
         int op = std::stoi(tokens[1]);
-
-        // Append to queued instructions:
-        // std::cout << "Adding to queue: " << op << std::endl;
-        int k = cycle+2;
-        queued_instructions.emplace(k, op);
-
-        // Perform any queued operations
-        // If current cycle is in queued instructions,
-
-        // for (const auto& pair : queued_instructions) {
-        //     std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-        //
+        queued_instructions.emplace(cycle, 0);
+        queued_instructions.emplace(cycle+1, op);
+        cycle += 2;
     }
-    auto it = queued_instructions.find(cycle);
-    if (it != queued_instructions.end()) {
-        X += queued_instructions[cycle];
+}
+void Register::execute_queue()
+{
+    for (int i=1; i!=queued_instructions.size()+1; ++i){
+        std::cout << "cycle: " << i << std::endl;
+        X += queued_instructions[i];
+        std::cout << "X: " << X << std::endl;
     }
-
-    std::cout << "End X: " << X << std::endl;
-    // If cmd_type is noop, nothing happens
-
-    ++cycle;
 }
