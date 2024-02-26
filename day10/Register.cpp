@@ -3,14 +3,14 @@
 #include <algorithm>
 #include "Register.h"
 
-Register::Register(): cycle(1), X(1) {};
+Register::Register(): cycle(0), X(1) {};
 void Register::build_queue(const std::string&s)
 {
     // Update Queued instructions
     std::string cmd_type = s.substr(0,4);
     if (cmd_type=="noop"){
-        queued_instructions.emplace(cycle, 0);
         cycle += 1;
+        queued_instructions.emplace(cycle, 0);
     }
     if (cmd_type=="addx"){
         // Get the int:
@@ -21,9 +21,9 @@ void Register::build_queue(const std::string&s)
             tokens.push_back(token);
         }
         int op = std::stoi(tokens[1]);
+        cycle += 2;
         queued_instructions.emplace(cycle, 0);
         queued_instructions.emplace(cycle+1, op);
-        cycle += 2;
     }
 }
 void Register::print_queue()

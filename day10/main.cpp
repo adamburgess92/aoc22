@@ -14,10 +14,8 @@ int main()
         r.build_queue(d[i]);
 
     }
-    // for (const auto& pair : r.queued_instructions) {
-    //     std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
-    // }
-    r.print_queue();
-    // r.print_res();
+    // r.print_queue();
+    r.print_res();
 
+    // 14900 too high
 }
