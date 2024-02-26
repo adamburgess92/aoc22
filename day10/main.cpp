@@ -17,6 +17,7 @@ int main()
     // for (const auto& pair : r.queued_instructions) {
     //     std::cout << "Key: " << pair.first << ", Value: " << pair.second << std::endl;
     // }
-    r.execute_queue();
+    r.print_queue();
+    // r.print_res();
 
 }

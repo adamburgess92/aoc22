@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 #include "Register.h"
 
 Register::Register(): cycle(1), X(1) {};
@@ -25,11 +26,24 @@ void Register::build_queue(const std::string&s)
         cycle += 2;
     }
 }
-void Register::execute_queue()
+void Register::print_queue()
 {
     for (int i=1; i!=queued_instructions.size()+1; ++i){
         std::cout << "cycle: " << i << std::endl;
         X += queued_instructions[i];
         std::cout << "X: " << X << std::endl;
     }
+}
+void Register::print_res()
+{
+    int sum = 0;
+    std::vector k_cycles = {20, 60, 100, 140, 180, 220};
+    for (int i=1; i!=queued_instructions.size()+1; ++i){
+        X += queued_instructions[i];
+        if (std::find(k_cycles.begin(), k_cycles.end(), i) != k_cycles.end()){
+            std::cout << X*i << std::endl;
+            sum = sum + i*X;
+        }
+    }
+    std::cout << sum << std::endl;
 }
