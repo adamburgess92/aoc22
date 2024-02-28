@@ -8,7 +8,7 @@
 
 int main()
 {
-    std::vector<std::string> d = parse_data("test_data.txt");
+    std::vector<std::string> d = parse_data("data.txt");
     Register r = Register();
     for (int i=0; i<d.size(); ++i){
         r.build_queue(d[i]);

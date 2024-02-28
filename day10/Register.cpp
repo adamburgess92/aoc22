@@ -52,24 +52,15 @@ void Register::print_res()
 void Register::render_crt()
 {
     int max_width = 40;
-    // Think of it in 1d first, render it in 2d.
-    int X = 1; // Should be 1?
+    int X = 1;
     int crt_col = 0;
-    // std::vector<char> p_vec;
     std::string p_vec;
-    for (int i=1; i!=queued_instructions.size(); ++i){
-        // std::cout << "crt_col: " << crt_col << std::endl;
-        // std::cout << X << std::endl;
+    for (int i=1; i!=queued_instructions.size()+1; ++i){
         int X_lower = X-1;
         int X_upper = X+1;
-        // std::cout << "i (crt pos): " << crt_col << std::endl;
-        // std::cout << "X_lower: " << X_lower << std::endl;
-        // std::cout << "X_upper : " << X_upper << std::endl;
         if (crt_col>=X_lower && crt_col<=X_upper){
-            // std::cout << '#' << std::endl;
             p_vec.push_back('#');
         } else {
-            // std::cout << '.' << std::endl;
             p_vec.push_back('.');
         }
         X += queued_instructions[i]; // Sprite centre
