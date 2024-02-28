@@ -1,12 +1,13 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <string>
 #include "Register.h"
 
 Register::Register(): cycle(1), X(1) {};
 void Register::build_queue(const std::string&s)
 {
-    // Update Queued instructions
+    // Update Queued instructions - these are the values AFTER cycle completes
     std::string cmd_type = s.substr(0,4);
     if (cmd_type=="noop"){
         queued_instructions.emplace(cycle, 0);
@@ -46,4 +47,45 @@ void Register::print_res()
         }
     }
     std::cout << sum << std::endl;
+}
+
+void Register::render_crt()
+{
+    int max_width = 40;
+    // Think of it in 1d first, render it in 2d.
+    int X = 0; // Should be 1?
+    int crt_col = 1;
+    // std::vector<char> p_vec;
+    std::string p_vec;
+    for (int i=1; i!=queued_instructions.size(); ++i){
+        // std::cout << "crt_col: " << crt_col << std::endl;
+        X += queued_instructions[i-1]; // Sprite centre
+        // std::cout << X << std::endl;
+        int X_lower = X-1;
+        int X_upper = X+1;
+        // std::cout << "i (crt pos): " << i << std::endl;
+        // std::cout << "X_lower: " << X_lower << std::endl;
+        // std::cout << "X_upper : " << X_upper << std::endl;
+        if (crt_col>=X_lower && crt_col<=X_upper){
+            // std::cout << '#' << std::endl;
+            p_vec.push_back('#');
+        } else {
+            // std::cout << '.' << std::endl;
+            p_vec.push_back('.');
+        }
+        ++crt_col;
+        if (crt_col>max_width){
+            // Reset crt_col
+            crt_col = 1;
+            // // Debug
+            // std::cout << p_vec.size() << std::endl;
+            // Print line:
+            for (int j=0; j!=p_vec.size(); ++j){
+                std::cout << p_vec[j] << "";
+            }
+            std::cout << std::endl;
+            // Reset p_vec
+            p_vec.clear();
+        }
+    }
 }

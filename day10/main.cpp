@@ -8,14 +8,15 @@
 
 int main()
 {
-    std::vector<std::string> d = parse_data("data.txt");
+    std::vector<std::string> d = parse_data("test_data.txt");
     Register r = Register();
     for (int i=0; i<d.size(); ++i){
         r.build_queue(d[i]);
 
     }
     // r.print_queue();
-    r.print_res();
+    // r.print_res();
+    r.render_crt();
 
     // 14900 too high
 }
