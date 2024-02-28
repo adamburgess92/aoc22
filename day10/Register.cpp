@@ -53,17 +53,16 @@ void Register::render_crt()
 {
     int max_width = 40;
     // Think of it in 1d first, render it in 2d.
-    int X = 0; // Should be 1?
-    int crt_col = 1;
+    int X = 1; // Should be 1?
+    int crt_col = 0;
     // std::vector<char> p_vec;
     std::string p_vec;
     for (int i=1; i!=queued_instructions.size(); ++i){
         // std::cout << "crt_col: " << crt_col << std::endl;
-        X += queued_instructions[i-1]; // Sprite centre
         // std::cout << X << std::endl;
         int X_lower = X-1;
         int X_upper = X+1;
-        // std::cout << "i (crt pos): " << i << std::endl;
+        // std::cout << "i (crt pos): " << crt_col << std::endl;
         // std::cout << "X_lower: " << X_lower << std::endl;
         // std::cout << "X_upper : " << X_upper << std::endl;
         if (crt_col>=X_lower && crt_col<=X_upper){
@@ -73,17 +72,14 @@ void Register::render_crt()
             // std::cout << '.' << std::endl;
             p_vec.push_back('.');
         }
+        X += queued_instructions[i]; // Sprite centre
         ++crt_col;
-        if (crt_col>max_width){
+        if (crt_col==max_width){
             // Reset crt_col
-            crt_col = 1;
+            crt_col = 0;
             // // Debug
-            // std::cout << p_vec.size() << std::endl;
             // Print line:
-            for (int j=0; j!=p_vec.size(); ++j){
-                std::cout << p_vec[j] << "";
-            }
-            std::cout << std::endl;
+            std::cout << p_vec << std::endl;
             // Reset p_vec
             p_vec.clear();
         }
