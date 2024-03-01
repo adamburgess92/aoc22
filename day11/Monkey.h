@@ -5,10 +5,11 @@
 
 class Monkey {
 public:
-    Monkey(int n, std::vector<int> starting_items, std::string op, std::string test, int if_true, int if_false);
+    Monkey(int n, std::vector<Item> starting_items);
+    int n;
     std::vector<Item> items;
-    int test_int;
-    void update_item_worry_level(Item& item);
-    void throw_item(Item item, std::vector<Monkey>& monkey_list);
+    // void update_item_worry_level(Item& item);
+    void throw_item(Item item, Monkey& to_monkey);
     int n_items_inspected = 0;
+
 };

@@ -1,27 +1,17 @@
 #include "Monkey.h"
-#include "Item.h"
 
+Monkey::Monkey(int n, std::vector<Item> starting_items) : n(n), items(starting_items) {};
 
+// void Monkey::update_item_worry_level(Item& item)
+// {
+//     int worry_level; // Do the operation
+//     item.worry_level = worry_level;
+// }
 
-void Monkey::update_item_worry_level(Item& item)
+void Monkey::throw_item(Item item, Monkey& to_monkey)
 {
-    int worry_level; // Do the operation
-    item.worry_level = worry_level;
-}
-
-void Monkey::throw_item(Item item, std::vector<Monkey>& monkey_list)
-{
-    // Figre out who to throw Item to:
-    if (item.worry_level%test_int==0){
-        int to = 1;
-    } else {
-        int to = 3;
-    }
-    int to = 3;
-    monkey_list[to].items.push_back(item);
-
-
-    // Remove from vector
-
-
+    // Throw item to another monkey
+    to_monkey.items.push_back(item);
+    // Remove item from this monkey:
+    items.erase(std::remove(items.begin(), items.end(), item), items.end());
 }
