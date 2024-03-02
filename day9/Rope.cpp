@@ -1,4 +1,3 @@
-#include "Coord.h"
 #include "Rope.h"
 
 Rope::Rope(): head_coords(0, 0), tail_coords(0, 0) {}

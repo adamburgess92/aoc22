@@ -67,7 +67,7 @@
 //     }
 // };
 
-int main()
+int main() 
 {
     // std::vector<std::string> data = parse_data("test_data.txt");
     // for (int i=0; i!=data.size(); ++i){

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-g++ -c coord.cpp -o coord.o
-g++ -c main.cpp -o main.o
-g++ -c parser.cpp -o parser.o
-g++ main.o parser.o coord.o -o main
+g++ -std=c++20 -c main.cpp -o main.o
+g++ -std=c++20 -c Parser.cpp -o parser.o
+g++ -std=c++20 -c Coord.cpp -o Coord.o
+g++ -std=c++20 -c Rope.cpp -o Rope.o
+g++ main.o Parser.o Coord.o Rope.o -o main
 ./main
