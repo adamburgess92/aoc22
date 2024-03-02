@@ -3,63 +3,59 @@
 #include <vector>
 #include "Monkey.h"
 
-
-// Op should be a function (if possible)
-// test should be a function (if possible)
-
-
-std::vector<Monkey> set_initial_state()
-{
-    std::vector<Monkey> monkey_list;
-    monkey_list.push_back(Monkey(0, std::vector<Item>{Item(79), Item(98)}));
-    monkey_list.push_back(Monkey(1, std::vector<Item>{Item(79), Item(98)}));
-    monkey_list.push_back(Monkey(2, std::vector<Item>{Item(79), Item(98)}));
-    monkey_list.push_back(Monkey(3, std::vector<Item>{Item(79), Item(98)}));
-    monkey_list.push_back(Monkey(4, std::vector<Item>{Item(79), Item(98)}));
-
-    return monkey_list;
-}
-
-
-
-// void perform_monkey_business(std::vector<Monkey>& monkey_list)
-// {
-//     for (int m=0; m!=monkey_list.size(); ++m){
-//         auto monkey = monkey_list[m];
-//         for (int i=0; i!=monkey.items.size(); ++i){
-//             monkey.update_item_worry_level(monkey.items[i]);
-//             monkey.throw_item(monkey.items[i]);
-
-//         }
-//     }
-// }
-
-
-
 int main()
 {
-    // std::vector<std::string> d = parse_data("data.txt");
-    // // One round
-    // perform_monkey_business(monkey_list); // Do this 20 times.
+    std::vector<std::vector<std::string>> d = parse_data("test_data.txt");
+    std::cout << d[0][0] << std::endl;
+    std::cout << d[0][1] << std::endl;
+    std::cout << d[0][2] << std::endl;
+    std::cout << d[0][3] << std::endl;
+    std::cout << d[0][4] << std::endl;
+    std::cout << d[0][5] << std::endl;
 
-    std::vector<Monkey> monkey_list = set_initial_state();
+    // Load data into vector
+    std::vector<Monkey> monkeys;
+    for (int i=0; i!=d.size(); ++i){
+        Monkey m = Monkey();
+        m.load_n(d[i][0]);
+        m.load_items(d[i][1]);
+        m.load_operation(d[i][2]);
+        m.load_test(d[i][3]);
+        m.load_true(d[i][4]);
+        m.load_false(d[i][5]);
+        monkeys.push_back(m);
+    }
 
+    for (int i=0; i!=monkeys.size(); ++i){
+        for (int j=0; j!=monkeys[i].items.size(); ++j){
+            monkeys[i].inspect_item(j);
+            monkeys[i].div_three(j);
+            monkeys[i].decide_and_throw(j, monkeys[i].to_true, monkeys[i].to_false);
+        }
+    }
+
+    /*
     Monkey monkey1 = Monkey(1, std::vector<Item>{Item(1), Item(2)});
     Monkey monkey2 = Monkey(2, std::vector<Item>{Item(3), Item(4)});
-    monkey1.throw_item(Item(1), monkey2);
-    std::cout << "monkey 2" << std::endl;
-    for (int i = 0; i!=monkey2.items.size(); ++i){
-      std::cout << monkey2.items[i].worry_level << std::endl;
-    }
+    Monkey monkey3 = Monkey(3, std::vector<Item>{Item(5), Item(6)});
+    monkey1.inspect_item(0);
+    monkey1.div_three(0);
+    monkey1.decide_and_throw(0, monkey2, monkey3);
     std::cout << "monkey 1" << std::endl;
     for (int i = 0; i!=monkey1.items.size(); ++i){
       std::cout << monkey1.items[i].worry_level << std::endl;
     }
-
-
+    std::cout << "monkey 2" << std::endl;
+    for (int i = 0; i!=monkey2.items.size(); ++i){
+      std::cout << monkey2.items[i].worry_level << std::endl;
+    }
+    std::cout << "monkey 3" << std::endl;
+    for (int i = 0; i!=monkey3.items.size(); ++i){
+      std::cout << monkey3.items[i].worry_level << std::endl;
+    }
+    */
 
 }
-
 
 /*
 Monkey 0:
