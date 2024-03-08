@@ -5,14 +5,17 @@ void Crawler::print_queue(std::queue<Point> q)
 {
   while (!q.empty())
   {
-    std::cout << q.front().row << ", " << q.front().col << std::endl;
+    std::cout << q.front().row << ", " << q.front().col << " dist: " << q.front().dist << std::endl;
     q.pop();
   }
 }
 
 
-Crawler::Crawler(std::vector<std::vector<char>> input_grid)
-    : grid(input_grid), n_rows(input_grid.size()), n_cols(input_grid[0].size()) {};
+Crawler::Crawler(std::vector<std::vector<char>> input_grid): 
+    grid(input_grid), 
+    n_rows(input_grid.size()), 
+    n_cols(input_grid[0].size())
+{};
 
 
 void Crawler::set_start_end_loc()
@@ -22,6 +25,7 @@ void Crawler::set_start_end_loc()
             char h = grid[r][c];
             if (h=='S'){
                 Point s_point(r, c);
+                s_point.add_dist(0);
                 start_point = s_point;
                 // Replace S with a
                 grid[r][c] = 'a';
@@ -38,11 +42,18 @@ void Crawler::set_start_end_loc()
 
 std::vector<Point> Crawler::get_valid_neighbours(Point p)
 {
+    // Create vector of optional new directions
     std::vector<Point> directions;
     Point point_up(p.row-1, p.col);
     Point point_down(p.row+1, p.col);
     Point point_left(p.row, p.col-1);
     Point point_right(p.row, p.col+1);
+    // Increase distance from starting cell
+    point_up.dist = p.dist+1;
+    point_down.dist = p.dist+1;
+    point_left.dist = p.dist+1;
+    point_right.dist = p.dist+1;
+
     directions.push_back(point_up);
     directions.push_back(point_down);
     directions.push_back(point_left);
@@ -53,7 +64,7 @@ std::vector<Point> Crawler::get_valid_neighbours(Point p)
         // Check boundaries
         if (directions[i].row<0 || directions[i].row>n_rows-1 || directions[i].col<0 || directions[i].col > n_cols-1){
             continue;
-        } else if (grid[directions[i].row][directions[i].col] <= grid[p.row][p.col]+1){
+        } else if (grid[directions[i].row][directions[i].col] <= grid[p.row][p.col]+1 && !is_already_in_queue(directions[i], visited)){
             options.push_back(directions[i]);
         }
     }
@@ -84,11 +95,12 @@ void Crawler::traverse()
 {
     Point current_point = start_point;
     queue.push(current_point);
-    // int i = 0;
     while(!queue.empty()){
+        // Mark current point as visited: 
+        visited.push(current_point);
         std::cout << "at point " << current_point.row << ", " << current_point.col << std::endl;
         if (check_stop(current_point)){
-            std::cout << "Reached E after " << n_visited << " steps" << std::endl;
+            std::cout << "Reached E after " << n_visited << " iterations" << std::endl;
             return;
         }
         std::vector<Point> move_options = get_valid_neighbours(current_point);
@@ -101,17 +113,10 @@ void Crawler::traverse()
         }
         move_options.clear();
         ++ n_visited;
-        // visited.push(queue.front());
         queue.pop();
         current_point = queue.front();
         
-        // std::cout << "Queue" << std::endl;
-        // print_queue(queue);
-        // std::cout << "Visited" << std::endl;
-        // print_queue(visited);
-        //  Need to prevent duplicates in queue
+        std::cout << "Queue" << std::endl;
+        print_queue(queue);
     }
 }
-
-
-

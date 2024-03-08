@@ -7,5 +7,6 @@ int main()
     Crawler c = Crawler(grid);
     c.set_start_end_loc();
     c.traverse();
+    c.print_queue(c.visited);
 
 }
