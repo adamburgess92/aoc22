@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Crawler.h"
 
 void Crawler::print_queue(std::queue<Point> q)
@@ -48,7 +47,7 @@ std::vector<Point> Crawler::get_valid_neighbours(Point p)
     Point point_down(p.row+1, p.col);
     Point point_left(p.row, p.col-1);
     Point point_right(p.row, p.col+1);
-    // Increase distance from starting cell
+    // Record increasing distance from starting cell
     point_up.dist = p.dist+1;
     point_down.dist = p.dist+1;
     point_left.dist = p.dist+1;
@@ -91,17 +90,28 @@ bool Crawler::is_already_in_queue(Point p, std::queue<Point> q)
     return false;
 }
 
-void Crawler::traverse()
+void Crawler::clear_queue(std::queue<Point>& q)
 {
+    while (!q.empty()){
+        q.pop();
+    }
+}
+
+int Crawler::traverse(Point start_point, Point end_point)
+{
+    // Reset things: 
+    n_visited = 0;
+    clear_queue(queue);
+    clear_queue(visited);
+
     Point current_point = start_point;
     queue.push(current_point);
     while(!queue.empty()){
         // Mark current point as visited: 
         visited.push(current_point);
-        std::cout << "at point " << current_point.row << ", " << current_point.col << std::endl;
+        // std::cout << "at point " << current_point.row << ", " << current_point.col << std::endl;
         if (check_stop(current_point)){
-            std::cout << "Reached E after " << n_visited << " iterations" << std::endl;
-            return;
+            return visited.back().dist;
         }
         std::vector<Point> move_options = get_valid_neighbours(current_point);
         for (int i=0; i!=move_options.size(); ++i){
@@ -115,8 +125,31 @@ void Crawler::traverse()
         ++ n_visited;
         queue.pop();
         current_point = queue.front();
-        
-        std::cout << "Queue" << std::endl;
-        print_queue(queue);
     }
+}
+
+void Crawler::find_a_points()
+{
+    for (int row=0; row!=grid.size(); ++row){
+        for (int col=0; col!=grid[0].size(); ++col){
+            if (grid[row][col]=='a'){
+                a_points.push_back(Point(row, col));
+            }
+        }
+    }
+}
+
+int Crawler::get_shortest_a_path()
+{
+    std::vector<int> distances;
+    for (int i=0; i!=a_points.size(); ++i){
+        distances.push_back(traverse(a_points[i], end_point));
+    }
+    int smallest = distances[0];
+    for (int i=0; i!=distances.size(); ++i){
+        if (distances[i]<smallest && distances[i]>0 && distances[i]<400){ // Bit dodgy but whatever.
+            smallest = distances[i];
+        }
+    }
+    return smallest;
 }
