@@ -1,8 +1,18 @@
 #include <iostream>
 #include "Crawler.h"
 
+void Crawler::print_queue(std::queue<Point> q)
+{
+  while (!q.empty())
+  {
+    std::cout << q.front().row << ", " << q.front().col << std::endl;
+    q.pop();
+  }
+}
+
+
 Crawler::Crawler(std::vector<std::vector<char>> input_grid)
-    : grid(input_grid), n_rows(input_grid.size()+1), n_cols(input_grid[0].size()+1) {};
+    : grid(input_grid), n_rows(input_grid.size()), n_cols(input_grid[0].size()) {};
 
 
 void Crawler::set_start_end_loc()
@@ -41,10 +51,10 @@ std::vector<Point> Crawler::get_valid_neighbours(Point p)
     // Evaluate whether movement possible:
     for (int i=0; i!=directions.size(); ++i){
         // Check boundaries
-        if (directions[i].row<0 || directions[i].row > n_rows || directions[i].col<0 || directions[i].col > n_rows){
+        if (directions[i].row<0 || directions[i].row>n_rows-1 || directions[i].col<0 || directions[i].col > n_cols-1){
             continue;
         } else if (grid[directions[i].row][directions[i].col] <= grid[p.row][p.col]+1){
-                options.push_back(directions[i]);
+            options.push_back(directions[i]);
         }
     }
     return options;
@@ -53,30 +63,53 @@ std::vector<Point> Crawler::get_valid_neighbours(Point p)
 bool Crawler::check_stop(Point p)
 {
     if (p==end_point){
+        stop_hit = true;
         return true;
     } 
+    return false;
+}
+
+bool Crawler::is_already_in_queue(Point p, std::queue<Point> q)
+{
+    while (!q.empty()){
+        if (q.front()==p){
+            return true;
+        }
+        q.pop();
+    }
     return false;
 }
 
 void Crawler::traverse()
 {
     Point current_point = start_point;
-
-    queue.push(start_point);
-    current_point = start_point;
+    queue.push(current_point);
+    // int i = 0;
     while(!queue.empty()){
-        std::cout << "Now at point " << current_point.row << ", " << current_point.col << std::endl;
+        std::cout << "at point " << current_point.row << ", " << current_point.col << std::endl;
         if (check_stop(current_point)){
             std::cout << "Reached E after " << n_visited << " steps" << std::endl;
+            return;
         }
-        visited.push(current_point);
         std::vector<Point> move_options = get_valid_neighbours(current_point);
         for (int i=0; i!=move_options.size(); ++i){
-            queue.push(move_options[i]);
+            if (is_already_in_queue(move_options[i], queue)){
+                continue;
+            } else {
+                queue.push(move_options[i]);
+            }
         }
         move_options.clear();
         ++ n_visited;
+        // visited.push(queue.front());
+        queue.pop();
         current_point = queue.front();
+        
+        // std::cout << "Queue" << std::endl;
+        // print_queue(queue);
+        // std::cout << "Visited" << std::endl;
+        // print_queue(visited);
+        //  Need to prevent duplicates in queue
     }
 }
 
