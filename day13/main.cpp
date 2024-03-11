@@ -28,6 +28,7 @@ int locate_closing_bracket(std::string& str_in)
     std::stringstream ss_open(str_in);
     // count number of '[' 
     char ch_open;
+    int i=0;
     int n_open=0;
     int n_close=0;
     while (ss_open >> ch_open){
@@ -38,19 +39,6 @@ int locate_closing_bracket(std::string& str_in)
             ++n_close;
         }
         if (n_open>0 && n_close>0 && n_open==n_close){
-            break;
-        }
-    }
-    // Find index of nth closing bracket:
-    std::stringstream ss_close(str_in);
-    char ch_close;
-    int i = 0;
-    int count_hit = 0;
-    while (ss_close >> ch_close){
-        if (ch_close==']'){
-            ++count_hit;
-        }
-        if (count_hit==n_open){
             break;
         }
         ++i;
@@ -71,8 +59,9 @@ void string_to_vec(std::string str_in)
             ss >> remainder;
             int close_bracket_index = locate_closing_bracket(remainder);
             std::string s = remainder.substr(1, close_bracket_index-1);
+            std::string r = remainder.substr(close_bracket_index+1, remainder.size());
             std::cout << s << std::endl;
-            string_to_vec(s);
+            string_to_vec(s+r);
         } else if (isdigit(ch)){
             ss.putback(ch);
             ss >> number;
@@ -84,21 +73,8 @@ void string_to_vec(std::string str_in)
 
 int main() 
 {
-    // std::vector<std::vector<std::string>> d = parse_data("test_data.txt");
-    // std::cout << d[0][0] << std::endl;
-    // std::cout << d[0][1] << std::endl;
-    // std::cout << d[1][0] << std::endl;
-    // std::cout << d[1][1] << std::endl;
 
-    // std::string test_string = "[[8,7,6]]";
-    // std::string test_string = "[1,[2,[3,[4,[5,6,7]]]],8,9]";
-    // std::string test_string = "[[[[[[[40]]]]]]]";
-    // std::string test_string = "[[4,4],4,4]";
     std::string test_string = "[4,4,[4,4]]";
-    // std::string test_string = "[[1],[2,3,4]]";
-    // std::string test_string = "[[],[],[[[0],8],[],[4,4,9],8],[[8,1,6]]]";
-
-
     string_to_vec(test_string);
 
 
