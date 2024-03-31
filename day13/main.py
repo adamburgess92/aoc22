@@ -2,7 +2,7 @@
 import itertools
 
 d = []
-with open("test_data.txt", "r") as f:
+with open("day13/data.txt", "r") as f:
     for line in f:
         d.append(line)
 # Clean up text
@@ -22,9 +22,11 @@ def check_and_convert_to_list(a):
         return a
 
 def compare_single(l, r):
+    if len(l)==0: 
+        return True
+    if len(r)==0:
+        return False
     for i in range(0, len(l)):
-        # print(l[i])
-        # print(r[i])
         try:
             li = l[i]
             ri = r[i]
@@ -34,28 +36,32 @@ def compare_single(l, r):
                 return False
         except TypeError:
             ll = check_and_convert_to_list(li)
-            rl =check_and_convert_to_list(ri)
-            if (ll < rl):
-                return True
-            elif (ll > rl):
-                return False
+            rl = check_and_convert_to_list(ri)
+            for j in range(0, len(ll)):
+                # Left is int, right still contains lists
+                if isinstance(ll[j], int) & ~isinstance(rl[j], int):
+                    return True
+                # Left still contains lists, right is int
+                if ~isinstance(ll[j], int) & isinstance(rl[j], int):
+                    return False
+                try:
+                    if (ll[j] < rl[j]):
+                        return True
+                    elif (ll[j] > rl[j]):
+                        return False
+                except TypeError:
+                    continue
         except IndexError:
             return False
         # Left side is exhausted:
         if i==len(l)-1:
             return True
 
-
-
-# test_l = [[4,4],4,4]
-# test_r = [[4,4],4,4,4]
-# print(compare_single(test_l, test_r))
-
-res = [None]
-for i in range(0, len(left)):
+res = []
+for i, v in enumerate(range(0, len(left))):
     print(left[i])
     print(right[i])
     print(compare_single(left[i], right[i]))
-
-
-# 238 is too low...
+    if compare_single(left[i], right[i]):
+        res.append(i+1)
+print(sum(res))
