@@ -2,7 +2,7 @@
 import itertools
 
 d = []
-with open("data.txt", "r") as f:
+with open("test_data.txt", "r") as f:
     for line in f:
         d.append(line)
 # Clean up text
@@ -22,47 +22,40 @@ def check_and_convert_to_list(a):
         return a
 
 def compare_single(l, r):
-    z = itertools.zip_longest(l, r)
-    for i in z:
-        l, r = i
-        l = check_and_convert_to_list(l)
-        r = check_and_convert_to_list(r)
-        print(l)
-        print(r)
-        # Check lengths:
-        if (len(l)==0) & (len(r)>0):
-            return True
-        elif (len(l)>0) & (len(r)==0):
+    for i in range(0, len(l)):
+        # print(l[i])
+        # print(r[i])
+        try:
+            li = l[i]
+            ri = r[i]
+            if (li<ri):
+                return True
+            elif (li>ri):
+                return False
+        except TypeError:
+            ll = check_and_convert_to_list(li)
+            rl =check_and_convert_to_list(ri)
+            if (ll < rl):
+                return True
+            elif (ll > rl):
+                return False
+        except IndexError:
             return False
-        # Check Nones
-        elif (l[0] is None) & (r[0] is not None):
+        # Left side is exhausted:
+        if i==len(l)-1:
             return True
-        elif (l[0] is not None) & (r[0] is None):
-            return False
-        # Check values
-        elif (l[0]<r[0]):
-            return True
-        elif (l[0]>r[0]):
-            return False
-        # If we haven't broken yet, continue...
-        else:
-            result = compare_single(l[1:], r[1:])
-            if result is not None:
-                return result
 
 
-# test_l = [7,7,7,7]
-# test_r = [7,7,7]
+
+# test_l = [[4,4],4,4]
+# test_r = [[4,4],4,4,4]
 # print(compare_single(test_l, test_r))
 
 res = [None]
 for i in range(0, len(left)):
     print(left[i])
     print(right[i])
-    c = compare_single(left[i], right[i])
-    res.append(c)
+    print(compare_single(left[i], right[i]))
 
-trues = [i for i,v in enumerate(res) if v is True]
-print(sum(trues))
 
 # 238 is too low...
