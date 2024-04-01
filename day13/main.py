@@ -1,19 +1,21 @@
 # Taking way too long to build a parser for this in C++
 import itertools
 
-d = []
-with open("day13/data.txt", "r") as f:
-    for line in f:
-        d.append(line)
-# Clean up text
-d = [i.strip("\n") for i in d]
-d = [i for i in d if i!='']
-# Split into left/right, evaluate text
-left = d[0::2]
-right = d[1::2]
-left = [eval(i) for i in left]
-right = [eval(i) for i in right]
-assert len(left)==len(right), "left and right should have same length"
+def parse_part_one(filename):
+    d = []
+    with open(filename, "r") as f:
+        for line in f:
+            d.append(line)
+    # Clean up text
+    d = [i.strip("\n") for i in d]
+    d = [i for i in d if i!='']
+    # Split into left/right, evaluate text
+    left = d[0::2]
+    right = d[1::2]
+    left = [eval(i) for i in left]
+    right = [eval(i) for i in right]
+    assert len(left)==len(right), "left and right should have same length"
+    return left, right
 
 def check_and_convert_to_list(a):
     if not(isinstance(a, list)):
@@ -57,11 +59,15 @@ def compare_single(l, r):
         if i==len(l)-1:
             return True
 
-res = []
-for i, v in enumerate(range(0, len(left))):
-    print(left[i])
-    print(right[i])
-    print(compare_single(left[i], right[i]))
-    if compare_single(left[i], right[i]):
-        res.append(i+1)
-print(sum(res))
+def get_result_part_one(filename):
+    left, right = parse_part_one(filename)
+    res = []
+    for i, v in enumerate(range(0, len(left))):
+        print(left[i])
+        print(right[i])
+        print(compare_single(left[i], right[i]))
+        if compare_single(left[i], right[i]):
+            res.append(i+1)
+    print(sum(res))
+
+get_result_part_one("day13/data.txt")
