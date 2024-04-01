@@ -27,7 +27,6 @@ def parse_part_two(filename):
     d = [eval(i) for i in d]
     d.append([[2]])
     d.append([[6]])
-    d.append([[3,3]])
     return d
 
 def check_and_convert_to_list(a):
@@ -35,42 +34,6 @@ def check_and_convert_to_list(a):
         return [a]
     else:
         return a
-
-def compare_single(l, r):
-    if len(l)==0:
-        return True
-    if len(r)==0:
-        return False
-    for i in range(0, len(l)):
-        try:
-            li = l[i]
-            ri = r[i]
-            if (li<ri):
-                return True
-            elif (li>ri):
-                return False
-        except TypeError:
-            ll = check_and_convert_to_list(li)
-            rl = check_and_convert_to_list(ri)
-            for j in range(0, len(ll)):
-                # Left is int, right still contains lists
-                if isinstance(ll[j], int) & ~isinstance(rl[j], int):
-                    return True
-                # Left still contains lists, right is int
-                if ~isinstance(ll[j], int) & isinstance(rl[j], int):
-                    return False
-                try:
-                    if (ll[j] < rl[j]):
-                        return True
-                    elif (ll[j] > rl[j]):
-                        return False
-                except TypeError:
-                    continue
-        except IndexError:
-            return False
-        # Left side is exhausted:
-        if i==len(l)-1:
-            return True
 
 def compare_atom(li, ri):
     if isinstance(li, int) & isinstance(ri, int):
@@ -93,18 +56,6 @@ def compare_atom(li, ri):
                 return True
             elif compare_atom(lij, rij) is False:
                 return False
-            # if isinstance(lij, int) & isinstance(rij, list):
-            #     return True
-            # elif isinstance(lij, list) & isinstance(rij, int):
-            #     return False
-            # elif isinstance(lij, list) & isinstance(rij, list):
-            #     pass
-            # elif isinstance(lij, int) & isinstance(rij, int):
-            #     if lij < rij:
-            #         return True
-            #     elif lij > rij:
-            #         return False
-
     # If mix of list and int:
     elif isinstance(li, list) & isinstance(ri, int) | isinstance(li, int) & isinstance(ri, list):
         lil = check_and_convert_to_list(li)
@@ -181,14 +132,9 @@ def test_compare():
     r = [[1],4] # Wnat this to return true
     res = compare(l, r)
     print(res)
-
 # test_compare()
 
-# test_s = [12, 11, 13, 5, 6]
-# r = insertion_sort(test_s)
-# print(r)
-
-# get_result_part_one("day13/data.txt")
-get_result_part_two("day13/test_data.txt")
+get_result_part_one("day13/data.txt")
+get_result_part_two("day13/data.txt")
 
 
