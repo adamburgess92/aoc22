@@ -1,6 +1,6 @@
-# Taking way too long to build a parser for this in C++
-import itertools
+import pprint
 
+# Taking way too long to build a parser for this in C++
 def parse_part_one(filename):
     d = []
     with open(filename, "r") as f:
@@ -16,6 +16,19 @@ def parse_part_one(filename):
     right = [eval(i) for i in right]
     assert len(left)==len(right), "left and right should have same length"
     return left, right
+
+def parse_part_two(filename):
+    d = []
+    with open(filename, "r") as f:
+        for line in f:
+            d.append(line)
+    d = [i.strip("\n") for i in d]
+    d = [i for i in d if i!='']
+    d = [eval(i) for i in d]
+    d.append([[2]])
+    d.append([[6]])
+    d.append([[3,3]])
+    return d
 
 def check_and_convert_to_list(a):
     if not(isinstance(a, list)):
@@ -59,6 +72,23 @@ def compare_single(l, r):
         if i==len(l)-1:
             return True
 
+def insertion_sort(ls):
+    for i in range(1, len(ls)):
+        key = ls[i]
+        j = i-1
+        while j >= 0 and compare_single(key, ls[j]) :
+                ls[j + 1] = ls[j]
+                j -= 1
+        ls[j + 1] = key
+    return ls
+
+def get_sum_idxs_part_2(ls):
+    a = ls.index([[2]])
+    print(a)
+    b = ls.index([[6]])
+    print(b)
+    return (a+1)*(b+1)
+
 def get_result_part_one(filename):
     left, right = parse_part_one(filename)
     res = []
@@ -70,4 +100,19 @@ def get_result_part_one(filename):
             res.append(i+1)
     print(sum(res))
 
+def get_result_part_two(filename):
+    d = parse_part_two(filename)
+    d_sorted = insertion_sort(d)
+    pprint.pprint(d_sorted)
+    res = get_sum_idxs_part_2(d_sorted)
+    print(res)
+
+
+# test_s = [12, 11, 13, 5, 6]
+# r = insertion_sort(test_s)
+# print(r)
+
 get_result_part_one("day13/data.txt")
+get_result_part_two("day13/test_data.txt")
+
+
