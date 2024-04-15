@@ -67,30 +67,39 @@ std::vector<Point> fill_space(Point point_a, Point point_b)
     for (int i=0; i!=new_points.size(); ++i){
         std::cout << new_points[i].X << "," << new_points[i].Y << std::endl;
     }
+    return new_points;
+}
+
+std::vector<Point> fill_space_vec(std::vector<Point>& v_points_in)
+{
+    // Apply fill_space to vector of points
+    std::vector<Point> v_points_out;
+    for (int i=1; i!=v_points_in.size(); ++i){
+        Point point_a = v_points_in[i-1];
+        Point point_b = v_points_in[i];
+        std::vector<Point> new_points = fill_space(point_a, point_b);
+        for (int j=0; j!=new_points.size(); ++j){
+            v_points_out.push_back(new_points[j]);
+        }
+        new_points.clear();
+    }
+    return v_points_out;
 }
 
 int main() 
 {
     // Load data
     std::vector<std::string> d = parse_data("test_data.txt");
-    // Convert to vectors vector of Points
+    // Convert to vectors of vectors of Points
+    std::vector<std::vector<Point>> d_points;
     for (int i=0; i!=d.size(); ++i){
-        std::vector<Point> d_point = apply_split(d[i]);
+        d_points.push_back(apply_split(d[i]));
     }
     // Now we have [[Point(1, 2), Point(3, 4)], [Point(5, 6), ...], ...]
-
-    // Test point: 
-    Point pa; 
-    pa.X = 525;
-    pa.Y = 117;
-    Point pb; 
-    pb.X = 525;
-    pb.Y = 114;
-    
-    fill_space(pa, pb);
-
-
-    
-
+    // Fill space: 
+    std::vector<std::vector<Point>> d_points_filled;
+    for (int i=0; i!=d_points.size(); ++i){
+        d_points_filled.push_back(fill_space_vec(d_points[i]));
+    }
     return 0;
 }
