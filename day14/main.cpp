@@ -64,9 +64,6 @@ std::vector<Point> fill_space(Point point_a, Point point_b)
             new_points.push_back(new_point);
         }
     }
-    for (int i=0; i!=new_points.size(); ++i){
-        std::cout << new_points[i].X << "," << new_points[i].Y << std::endl;
-    }
     return new_points;
 }
 
@@ -86,6 +83,18 @@ std::vector<Point> fill_space_vec(std::vector<Point>& v_points_in)
     return v_points_out;
 }
 
+std::vector<Point> flatten_vector(std::vector<std::vector<Point>>& v_in)
+{
+    std::vector<Point> flattened_vec;
+    for (int i=0; i!=v_in.size(); ++i){
+        std::vector<Point> sub_vec = v_in[i];
+        for (int j=0; j!=sub_vec.size(); ++j){
+            flattened_vec.push_back(sub_vec[j]);
+        }
+    }
+    return flattened_vec;
+}
+
 int main() 
 {
     // Load data
@@ -100,6 +109,13 @@ int main()
     std::vector<std::vector<Point>> d_points_filled;
     for (int i=0; i!=d_points.size(); ++i){
         d_points_filled.push_back(fill_space_vec(d_points[i]));
+    }
+    // Now we have vectors of vectors of Points, representing the whole grid... we need to flatten it
+    std::vector<Point> all_points = flatten_vector(d_points_filled);
+    
+    
+    for (int i=0; i!=all_points.size(); ++i){
+        std::cout << all_points[i].X << "," << all_points[i].Y << std::endl;
     }
     return 0;
 }
