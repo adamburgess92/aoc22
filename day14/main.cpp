@@ -6,26 +6,26 @@
 
 class Point {
 public: 
+    // Point() {};
     int X;
     int Y;
 };
 
-std::vector<std::string> split(std::string s, std::string delimiter) {
+std::vector<std::string> split(std::string s, std::string delimiter)
+{
+    std::string token; 
+    std::vector<std::string> tokens; 
     int pos_start = 0;
     int pos_end = delimiter.length();
-    int delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
-    while ((pos_end = s.find(delimiter, pos_start)) != std::string::npos) {
-        token = s.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
+    int delim_end = delimiter.length();
+
+    while((pos_end = s.find(delimiter, pos_start)) != std::string::npos){
+        token = s.substr(pos_start, pos_end - pos_start);
+        pos_start = pos_end + delim_end; 
+        tokens.push_back(token);
     }
-    res.push_back (s.substr (pos_start));
-    for (int i=0; i!=res.size(); ++i){
-        std::cout << res[i] << std::endl;
-    }
-    return res;
+    tokens.push_back(s.substr(pos_start));
+    return tokens;
 }
 
 
@@ -37,14 +37,11 @@ int main()
     }
 
     // Iterate through lines of data, collecting lists of Points: 
-    std::string delim = " -> ";
-    // std::vector<Point> ls_pnt = create_ls_pnt(d, delim);
-    split(d[0], delim);
+    std::string delim1 = " -> ";
+    std::vector<std::string> res = split(d[0], delim1);
 
-
-    
-
-
-
+    for (int i=0; i!=res.size(); ++i){
+        std::cout << res[i] << std::endl;
+    }
     return 0;
 }
