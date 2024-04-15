@@ -6,7 +6,7 @@
 
 class Point {
 public: 
-    // Point() {};
+    Point() {};
     int X;
     int Y;
 };
@@ -28,6 +28,31 @@ std::vector<std::string> split(std::string s, std::string delimiter)
     return tokens;
 }
 
+void apply_split(std::string s)
+{
+    // Output vector: 
+    std::vector<Point> points; 
+    std::string delimiter1 = " -> ";
+    std::vector<std::string> s1 = split(s, delimiter1);
+    // Iterate through s1, split by comma and create Points
+    std::string delimiter2 = ",";
+    std::vector<std::string> h;
+    int x; 
+    int y; 
+    for (int i=0; i!=s.size(); ++i){
+        h = split(s1[i], delimiter2);
+        x = std::stoi(h[0]);
+        y = std::stoi(h[1]);
+        std::cout << x << std::endl;
+        std::cout << y << std::endl;
+        // Create Point: 
+        Point p;
+        p.X = x; 
+        p.Y = y;
+        points.push_back(p);
+    }
+}
+
 
 int main() 
 {
@@ -36,12 +61,17 @@ int main()
         std::cout << d[i] << '\n';
     }
 
-    // Iterate through lines of data, collecting lists of Points: 
-    std::string delim1 = " -> ";
-    std::vector<std::string> res = split(d[0], delim1);
+    apply_split(d[0]);
 
-    for (int i=0; i!=res.size(); ++i){
-        std::cout << res[i] << std::endl;
-    }
+
+
+
+    // // Iterate through lines of data, collecting lists of Points: 
+    // std::string delim1 = " -> ";
+    // std::vector<std::string> res = split(d[0], delim1);
+
+    // for (int i=0; i!=res.size(); ++i){
+    //     std::cout << res[i] << std::endl;
+    // }
     return 0;
 }
