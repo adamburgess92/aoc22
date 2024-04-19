@@ -21,6 +21,7 @@ public:
     Sand() {X=500; Y=0; at_rest=false; reached_abyss=false;} // Default constructor places new unit of sand at 500,0
     void move(std::vector<std::vector<char>> landscape)
     {
+        char curr = landscape[Y][X];
         char below = landscape[Y+1][X];
         char left = landscape[Y+1][X-1];
         char right = landscape[Y+1][X+1];
@@ -201,7 +202,7 @@ std::vector<Point> add_floor_points(std::vector<Point>& all_points)
 int main()
 {
     // Load data
-    std::vector<std::string> d = parse_data("test_data.txt");
+    std::vector<std::string> d = parse_data("data.txt");
     // Convert to vectors of vectors of Points
     std::vector<std::vector<Point>> d_points;
     for (int i=0; i!=d.size(); ++i){
@@ -216,28 +217,30 @@ int main()
     // Now we have vectors of vectors of Points, representing the whole grid. Flatten it:
     std::vector<Point> rocks = flatten_vector(d_points_filled);
     
-    // If part 2:
+    // Uncomment below line for part 2:
     rocks = add_floor_points(rocks);
 
-    // Part 1
     // Build starting landscape
     std::vector<std::vector<char>> landscape = build_landscape(0, 700, 0, 300, rocks);
     Grid g;
     g.landscape = landscape;
 
     int n_units = 0;
-    for (int i=0; i!=2000; ++i){
+    for (int i=0; i!=100000; ++i){
         // Make new sand and drop it
         Sand s = Sand();
         ++n_units;
-        while (!s.at_rest && !s.reached_abyss) {
+        while (!s.at_rest) {
             s.move(g.landscape);
         }
         std::cout << "Settled at " << s.X << ", " << s.Y <<  std::endl;
         // Update landscape:
         g.add_sand_to_landscape(s.X, s.Y);
-        g.print_landscape(480, 530, 0, 15);
+        // g.print_landscape(480, 530, 0, 15);
         std::cout << "n units: " << n_units << std::endl;
+        if (s.X==500 && s.Y==0){ // If sand settles at starting point
+            break;
+        }
     }
     return 0;
 }
