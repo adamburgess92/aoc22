@@ -17,9 +17,7 @@ public:
     int X;
     int Y;
     bool at_rest;
-    bool down_possible;
-    bool left_possible;
-    bool right_possible;
+    bool reached_abyss;
     Sand() {X=500; Y=0; at_rest=false;} // Default constructor places new unit of sand at 500,0
     void move(std::vector<std::vector<char>> landscape)
     {
@@ -27,18 +25,18 @@ public:
         char left = landscape[Y+1][X-1];
         char right = landscape[Y+1][X+1];
         if (below=='.'){
-            down_possible = true;
             ++Y;
         } else if (left=='.'){
-            left_possible = true;
             ++Y;
             --X;
         } else if (right=='.'){
-            right_possible = true;
             ++Y;
             ++X;
         } else {
             at_rest = true;
+        }
+        if (Y == 599) {
+            reached_abyss=true;
         }
     };
 
@@ -173,13 +171,6 @@ std::vector<std::vector<char>> build_landscape(int x_min, int x_max, int y_min, 
     for (const Point& p : all_points) {
         grid[p.Y][p.X] = p.T;
     }
-    // // Print the grid (optional)
-    // for (int y=y_min; y!=y_max; ++y) {
-    //     for (int x=x_min; x!=x_max; ++x) {
-    //         std::cout << grid[y][x] << "";
-    //     }
-    //     std::cout << std::endl; // Terminate the line after each row
-    // }
     return grid;
 }
 
@@ -201,37 +192,31 @@ int main()
     // Now we have vectors of vectors of Points, representing the whole grid. Flatten it:
     std::vector<Point> rocks = flatten_vector(d_points_filled);
     // Build starting landscape
-    std::vector<std::vector<char>> landscape = build_landscape(494, 504, 0, 10, rocks);
+    // std::vector<std::vector<char>> landscape = build_landscape(494, 504, 0, 10, rocks);
+    std::vector<std::vector<char>> landscape = build_landscape(0, 600, 0, 100, rocks);
     Grid g;
     g.landscape = landscape;
 
-    for (int i=0; i!=20; ++i){
+    int n_units = 0;
+    for (int i=0; i!=100; ++i){
         // Make new sand and drop it
         Sand s = Sand();
-        while (!s.at_rest) {
+        ++n_units;
+        while (!s.at_rest && !s.reached_abyss) {
             s.move(g.landscape);
+        }
+        if (s.reached_abyss) {
+            break;
         }
         std::cout << "Settled at " << s.X << ", " << s.Y <<  std::endl;
         // Update landscape:
         g.add_sand_to_landscape(s.X, s.Y);
-        g.print_landscape(494, 504, 0, 10);
+        // g.print_landscape(494, 504, 0, 10);
+        g.print_landscape(490, 530, 0, 15);
+        std::cout << "n units: " << n_units << std::endl;
     }
 
     return 0;
 }
 
 
-/*
-Release a unit of sand from 500, 0
-check down
-    move down if possible
-check left
-    move left if possible
-check right
-    move right if possible
-if none possible
-    rest
-update landscape
-... and repeat
-if no move possible -> break. More likely - if it gets stuck in an infinite loop, break
-*/
