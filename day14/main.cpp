@@ -12,9 +12,55 @@ public:
     char T; // Type
 };
 
+class Sand {
+public:
+    int X;
+    int Y;
+    bool at_rest;
+    bool down_possible;
+    bool left_possible;
+    bool right_possible;
+    Sand() {X=500; Y=0; at_rest=false;} // Default constructor places new unit of sand at 500,0
+    void move(std::vector<std::vector<char>> landscape)
+    {
+        char below = landscape[Y+1][X];
+        char left = landscape[Y+1][X-1];
+        char right = landscape[Y+1][X+1];
+        if (below=='.'){
+            down_possible = true;
+            ++Y;
+        } else if (left=='.'){
+            left_possible = true;
+            ++Y;
+            --X;
+        } else if (right=='.'){
+            right_possible = true;
+            ++Y;
+            ++X;
+        } else {
+            at_rest = true;
+        }
+    };
+
+};
+
 class Grid {
 public:
     std::vector<std::vector<char>> landscape;
+    void add_sand_to_landscape(int x, int y)
+    {
+        landscape[y][x] = 'o';
+    }
+    void print_landscape(int x_min, int x_max, int y_min, int y_max)
+    {
+        // Print the grid (optional)
+        for (int y=y_min; y!=y_max; ++y) {
+            for (int x=x_min; x!=x_max; ++x) {
+                std::cout << landscape[y][x] << "";
+            }
+            std::cout << std::endl; // Terminate the line after each row
+        }
+    }
 };
 
 std::vector<std::string> split(std::string s, std::string delimiter)
@@ -121,19 +167,19 @@ std::vector<std::vector<char>> build_landscape(int x_min, int x_max, int y_min, 
             all_points.push_back(current_point);
         }
     }
-    // Draw the grid:
+    // Contruct the grid:
     std::vector<std::vector<char>> grid(y_max, std::vector<char>(x_max));
     // Populate the grid with the symbols from the points
     for (const Point& p : all_points) {
         grid[p.Y][p.X] = p.T;
     }
-    // Print the grid
-    for (int y=y_min; y!=y_max; ++y) {
-        for (int x=x_min; x!=x_max; ++x) {
-            std::cout << grid[y][x] << "";
-        }
-        std::cout << std::endl; // Terminate the line after each row
-    }
+    // // Print the grid (optional)
+    // for (int y=y_min; y!=y_max; ++y) {
+    //     for (int x=x_min; x!=x_max; ++x) {
+    //         std::cout << grid[y][x] << "";
+    //     }
+    //     std::cout << std::endl; // Terminate the line after each row
+    // }
     return grid;
 }
 
@@ -147,23 +193,45 @@ int main()
         d_points.push_back(apply_split(d[i]));
     }
     // Now we have [[Point(1, 2), Point(3, 4)], [Point(5, 6), ...], ...]
-    // Fill space:
+    // Fill spaces:
     std::vector<std::vector<Point>> d_points_filled;
     for (int i=0; i!=d_points.size(); ++i){
         d_points_filled.push_back(fill_space_vec(d_points[i]));
     }
-    // Now we have vectors of vectors of Points, representing the whole grid... we need to flatten it
+    // Now we have vectors of vectors of Points, representing the whole grid. Flatten it:
     std::vector<Point> rocks = flatten_vector(d_points_filled);
-
-
-    for (int i=0; i!=rocks.size(); ++i){
-        std::cout << rocks[i].X << "," << rocks[i].Y << ", " << rocks[i].T << std::endl;
-    }
-
-    // Build grid, with starting landscape
+    // Build starting landscape
     std::vector<std::vector<char>> landscape = build_landscape(494, 504, 0, 10, rocks);
     Grid g;
     g.landscape = landscape;
 
+    for (int i=0; i!=20; ++i){
+        // Make new sand and drop it
+        Sand s = Sand();
+        while (!s.at_rest) {
+            s.move(g.landscape);
+        }
+        std::cout << "Settled at " << s.X << ", " << s.Y <<  std::endl;
+        // Update landscape:
+        g.add_sand_to_landscape(s.X, s.Y);
+        g.print_landscape(494, 504, 0, 10);
+    }
+
     return 0;
 }
+
+
+/*
+Release a unit of sand from 500, 0
+check down
+    move down if possible
+check left
+    move left if possible
+check right
+    move right if possible
+if none possible
+    rest
+update landscape
+... and repeat
+if no move possible -> break. More likely - if it gets stuck in an infinite loop, break
+*/
