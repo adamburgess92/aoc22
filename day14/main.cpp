@@ -35,7 +35,7 @@ public:
         } else {
             at_rest = true;
         }
-        if (Y == 599) {
+        if (Y == 699) {
             reached_abyss=true;
         }
     };
@@ -177,7 +177,7 @@ std::vector<std::vector<char>> build_landscape(int x_min, int x_max, int y_min, 
 int main()
 {
     // Load data
-    std::vector<std::string> d = parse_data("test_data.txt");
+    std::vector<std::string> d = parse_data("data.txt");
     // Convert to vectors of vectors of Points
     std::vector<std::vector<Point>> d_points;
     for (int i=0; i!=d.size(); ++i){
@@ -193,12 +193,12 @@ int main()
     std::vector<Point> rocks = flatten_vector(d_points_filled);
     // Build starting landscape
     // std::vector<std::vector<char>> landscape = build_landscape(494, 504, 0, 10, rocks);
-    std::vector<std::vector<char>> landscape = build_landscape(0, 600, 0, 100, rocks);
+    std::vector<std::vector<char>> landscape = build_landscape(0, 700, 0, 300, rocks);
     Grid g;
     g.landscape = landscape;
 
     int n_units = 0;
-    for (int i=0; i!=100; ++i){
+    for (int i=0; i!=2000; ++i){
         // Make new sand and drop it
         Sand s = Sand();
         ++n_units;
@@ -211,12 +211,10 @@ int main()
         std::cout << "Settled at " << s.X << ", " << s.Y <<  std::endl;
         // Update landscape:
         g.add_sand_to_landscape(s.X, s.Y);
-        // g.print_landscape(494, 504, 0, 10);
-        g.print_landscape(490, 530, 0, 15);
+        // g.print_landscape(490, 530, 0, 15);
         std::cout << "n units: " << n_units << std::endl;
     }
 
     return 0;
 }
-
 
