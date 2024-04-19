@@ -18,7 +18,7 @@ public:
     int Y;
     bool at_rest;
     bool reached_abyss;
-    Sand() {X=500; Y=0; at_rest=false;} // Default constructor places new unit of sand at 500,0
+    Sand() {X=500; Y=0; at_rest=false; reached_abyss=false;} // Default constructor places new unit of sand at 500,0
     void move(std::vector<std::vector<char>> landscape)
     {
         char below = landscape[Y+1][X];
@@ -177,7 +177,7 @@ std::vector<std::vector<char>> build_landscape(int x_min, int x_max, int y_min, 
 int main()
 {
     // Load data
-    std::vector<std::string> d = parse_data("data.txt");
+    std::vector<std::string> d = parse_data("test_data.txt");
     // Convert to vectors of vectors of Points
     std::vector<std::vector<Point>> d_points;
     for (int i=0; i!=d.size(); ++i){
@@ -205,13 +205,10 @@ int main()
         while (!s.at_rest && !s.reached_abyss) {
             s.move(g.landscape);
         }
-        if (s.reached_abyss) {
-            break;
-        }
         std::cout << "Settled at " << s.X << ", " << s.Y <<  std::endl;
         // Update landscape:
         g.add_sand_to_landscape(s.X, s.Y);
-        // g.print_landscape(490, 530, 0, 15);
+        // g.print_landscape(493, 504, 0, 10);
         std::cout << "n units: " << n_units << std::endl;
     }
 
