@@ -6,22 +6,28 @@
 #include <algorithm>
 
 class Point {
-public: 
+public:
     int X;
     int Y;
+    char T; // Type
+};
+
+class Grid {
+public:
+    std::vector<std::vector<char>> landscape;
 };
 
 std::vector<std::string> split(std::string s, std::string delimiter)
 {
-    std::string token; 
-    std::vector<std::string> tokens; 
+    std::string token;
+    std::vector<std::string> tokens;
     int pos_start = 0;
     int pos_end = delimiter.length();
     int delim_end = delimiter.length();
 
     while((pos_end = s.find(delimiter, pos_start)) != std::string::npos){
         token = s.substr(pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_end; 
+        pos_start = pos_end + delim_end;
         tokens.push_back(token);
     }
     tokens.push_back(s.substr(pos_start));
@@ -30,8 +36,8 @@ std::vector<std::string> split(std::string s, std::string delimiter)
 
 std::vector<Point> apply_split(std::string s)
 {
-    // Output vector: 
-    std::vector<Point> points; 
+    // Output vector:
+    std::vector<Point> points;
     std::string delimiter1 = " -> ";
     std::vector<std::string> s1 = split(s, delimiter1);
     std::string delimiter2 = ",";
@@ -42,6 +48,7 @@ std::vector<Point> apply_split(std::string s)
         Point p;
         p.X = x;
         p.Y = y;
+        p.T = '#';
         points.push_back(p);
     }
     return points;
@@ -61,6 +68,7 @@ std::vector<Point> fill_space(Point point_a, Point point_b)
             Point new_point;
             new_point.X = i;
             new_point.Y = j;
+            new_point.T = '#';
             new_points.push_back(new_point);
         }
     }
@@ -95,7 +103,41 @@ std::vector<Point> flatten_vector(std::vector<std::vector<Point>>& v_in)
     return flattened_vec;
 }
 
-int main() 
+std::vector<std::vector<char>> build_landscape(int x_min, int x_max, int y_min, int y_max, std::vector<Point>& rocks)
+{
+    std::vector<Point> all_points;
+    for (int i=x_min; i!=x_max; ++i){
+        for (int j=y_min; j!=y_max; ++j){
+            Point current_point;
+            current_point.X = i;
+            current_point.Y = j;
+            current_point.T = '.';
+            // Check if this point appears in rocks:
+            for (const Point& r : rocks){
+                if (current_point.X==r.X && current_point.Y==r.Y){
+                    current_point.T = '#';
+                }
+            }
+            all_points.push_back(current_point);
+        }
+    }
+    // Draw the grid:
+    std::vector<std::vector<char>> grid(y_max, std::vector<char>(x_max));
+    // Populate the grid with the symbols from the points
+    for (const Point& p : all_points) {
+        grid[p.Y][p.X] = p.T;
+    }
+    // Print the grid
+    for (int y=y_min; y!=y_max; ++y) {
+        for (int x=x_min; x!=x_max; ++x) {
+            std::cout << grid[y][x] << "";
+        }
+        std::cout << std::endl; // Terminate the line after each row
+    }
+    return grid;
+}
+
+int main()
 {
     // Load data
     std::vector<std::string> d = parse_data("test_data.txt");
@@ -105,17 +147,23 @@ int main()
         d_points.push_back(apply_split(d[i]));
     }
     // Now we have [[Point(1, 2), Point(3, 4)], [Point(5, 6), ...], ...]
-    // Fill space: 
+    // Fill space:
     std::vector<std::vector<Point>> d_points_filled;
     for (int i=0; i!=d_points.size(); ++i){
         d_points_filled.push_back(fill_space_vec(d_points[i]));
     }
     // Now we have vectors of vectors of Points, representing the whole grid... we need to flatten it
-    std::vector<Point> all_points = flatten_vector(d_points_filled);
-    
-    
-    for (int i=0; i!=all_points.size(); ++i){
-        std::cout << all_points[i].X << "," << all_points[i].Y << std::endl;
+    std::vector<Point> rocks = flatten_vector(d_points_filled);
+
+
+    for (int i=0; i!=rocks.size(); ++i){
+        std::cout << rocks[i].X << "," << rocks[i].Y << ", " << rocks[i].T << std::endl;
     }
+
+    // Build grid, with starting landscape
+    std::vector<std::vector<char>> landscape = build_landscape(494, 504, 0, 10, rocks);
+    Grid g;
+    g.landscape = landscape;
+
     return 0;
 }
