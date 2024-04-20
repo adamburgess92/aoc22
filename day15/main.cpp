@@ -61,14 +61,16 @@ int main ()
 {
     std::vector<std::string> data = load_data("test_data.txt");
     auto v = apply_find_ints(data);
-
-    // // idx 6 == (8,7) from the example
-    // int s_x = v[6][0];
-    // int s_y = v[6][1];
-    // int b_x = v[6][2];
-    // int b_y = v[6][3];
-    // find_intersect(s_x, s_y, b_x, b_y, 10);
     auto intersections = find_all_intersect(v, 10); 
+    // std::cout << intersections[6][0] << std::endl;
+    // std::cout << intersections[6][1] << std::endl;
+    int n_possible_beacon = 0;
+    for (int i=-3; i!=26; ++i){
+        for (int j=0; j!=intersections.size(); ++j){
+            // If i between start/end then cannot contain beacon - but need to remove overlap first...
+            if
+        }
+    }
     
     return 0;
 }
