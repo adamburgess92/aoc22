@@ -3,17 +3,8 @@
 #include <regex>
 #include "Parser.h"
 
-class Sensor {
-    int X; 
-    int Y; 
-};
 
-class Beacon {
-    int X;
-    int Y; 
-};
-
-std::vector<int> foo(const std::string& s) 
+std::vector<int> find_ints(const std::string& s) 
 { 
     std::vector<int> ints;
     std::regex pattern(R"((-?\d+))");
@@ -22,28 +13,39 @@ std::vector<int> foo(const std::string& s)
 
     while (it != end) {
         std::smatch match = *it;
-        std::cout << "Integer found: " << match.str(1) << std::endl;
+        // std::cout << "Integer found: " << match.str(1) << std::endl;
         ints.push_back(std::stoi(match[1]));
         ++it;
     }
-    std::cout << std::endl;
+    // std::cout << std::endl;
     return ints;
 }
 
-std::vector<std::vector<int>> apply_foo(const std::vector<std::string>& v_in)
+std::vector<std::vector<int>> apply_find_ints(const std::vector<std::string>& v_in)
 {
     std::vector<std::vector<int>> v_out;
     for (int i=0; i!=v_in.size(); ++i){
-        std::vector<int> r = foo(v_in[i]);
+        std::vector<int> r = find_ints(v_in[i]);
         v_out.push_back(r);
     }
     return v_out;
 }
 
+void solver (int s_x, int s_y, int b_x, int b_y, int line)
+{
+    int m_dist = abs(b_y-s_y) + abs(b_x-s_x);
+    int y_dist = abs(line - s_y);
+    int x_a = s_x - (m_dist - y_dist);
+    int x_b = s_x + (m_dist - y_dist);
+    std::cout << "x_a: " << x_a << std::endl;
+    std::cout << "x_b: " << x_b << std::endl;    
+}
+
+
 int main () 
 {
     std::vector<std::string> data = load_data("test_data.txt");
-    auto v = apply_foo(data);
+    auto v = apply_find_ints(data);
 
     // idx 6 == (8,7) from the example
     int s_x = v[6][0];
@@ -51,10 +53,8 @@ int main ()
     int b_x = v[6][2];
     int b_y = v[6][3];
 
-    int dist = abs(b_y-s_y) + abs(b_x-s_x);
-    std::cout << dist << std::endl;
+    solver(s_x, s_y, b_x, b_y, 10);
     
-
     return 0;
 }
 
@@ -69,5 +69,7 @@ This is probably a math problem
 Maybe start by finding boundaries? Even that is a lot...
 
 From sensor S, if dist is d, what are the start/end coordinates at line L? <- this is probably the way
+
+
 
 */
