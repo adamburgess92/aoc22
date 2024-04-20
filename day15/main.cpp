@@ -26,6 +26,7 @@ std::vector<int> foo(const std::string& s)
         ints.push_back(std::stoi(match[1]));
         ++it;
     }
+    std::cout << std::endl;
     return ints;
 }
 
@@ -42,10 +43,31 @@ std::vector<std::vector<int>> apply_foo(const std::vector<std::string>& v_in)
 int main () 
 {
     std::vector<std::string> data = load_data("test_data.txt");
-    // for (int i=0; i!=data.size(); ++i){
-    //     std::cout << data[i] << std::endl;
-    // }
-    apply_foo(data);
+    auto v = apply_foo(data);
+
+    // idx 6 == (8,7) from the example
+    int s_x = v[6][0];
+    int s_y = v[6][1];
+    int b_x = v[6][2];
+    int b_y = v[6][3];
+
+    int dist = abs(b_y-s_y) + abs(b_x-s_x);
+    std::cout << dist << std::endl;
+    
 
     return 0;
 }
+
+
+
+
+
+/* 
+In row 2,000,000, how many positions cannot contain a beacon?
+Don't draw the grid, it'll take forever...
+This is probably a math problem 
+Maybe start by finding boundaries? Even that is a lot...
+
+From sensor S, if dist is d, what are the start/end coordinates at line L? <- this is probably the way
+
+*/
