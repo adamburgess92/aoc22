@@ -95,12 +95,13 @@ int find_max_x(const std::vector<std::vector<int>>& v_in)
 
 void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> intersections)
 {
-    int n;
+    int n=0;
     for (int i=start; i!=stop; ++i){
         for (int j=0; j!=intersections.size(); ++j){
             int x_a = intersections[j][0];
             int x_b = intersections[j][1];
-            if (i>x_a && i<x_b) {
+            if (i>=x_a && i<=x_b) {
+                std::cout << "Defs no distress beacon at: " << i << std::endl;
                 ++n;
                 break;
             }
@@ -112,15 +113,15 @@ void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> inter
 int main ()
 {
     std::vector<std::string> data = load_data("test_data.txt");
+    std::cout << data[0] << std::endl;
     std::vector<std::vector<int>> v = apply_find_ints(data);
     auto intersections = find_all_intersect(v, 10);
-    std::cout << intersections[6][0] << std::endl;
-    std::cout << intersections[6][1] << std::endl;
+
     int x_min = find_min_x(v);
     int x_max = find_max_x(v);
     std::cout << "x_min: " << x_min << std::endl;
     std::cout << "x_max: " << x_max << std::endl;
-    no_possible_beacon(x_min, x_max, intersections);
+    no_possible_beacon(-1000, 1000, intersections);
 
 
     // Test things:
@@ -132,13 +133,5 @@ int main ()
 
 
 /*
-In row 2,000,000, how many positions cannot contain a beacon?
-Don't draw the grid, it'll take forever...
-This is probably a math problem
-Maybe start by finding boundaries? Even that is a lot...
-
-From sensor S, if dist is d, what are the start/end coordinates at line L? <- this is probably the way
-
-
-
+Just need to remove Beacons in row 10
 */
