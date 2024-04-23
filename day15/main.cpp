@@ -61,7 +61,7 @@ std::vector<std::vector<int>> find_all_intersect(const std::vector<std::vector<i
 
 int find_min_x(const std::vector<std::vector<int>>& v_in)
 {
-    int min;
+    int min=0;
     for (int i=0; i!=v_in.size(); ++i){
         int s_x = v_in[i][0];
         int s_y = v_in[i][1];
@@ -96,13 +96,22 @@ int find_max_x(const std::vector<std::vector<int>>& v_in)
 void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> intersections)
 {
     int n=0;
-    for (int i=start; i!=stop; ++i){
+    for (int i=start; i<stop+12; ++i){
         for (int j=0; j!=intersections.size(); ++j){
             int x_a = intersections[j][0];
             int x_b = intersections[j][1];
+            bool in=false;
             if (i>=x_a && i<=x_b) {
-                std::cout << "Defs no distress beacon at: " << i << std::endl;
+                in = true;
                 ++n;
+                if (in && i>stop){
+                    std::cout << "i: " << i << std::endl;
+                    std::cout << "x_a: " << x_a << std::endl;
+                    std::cout << "x_b: " << x_b << std::endl;
+                    std::cout << "in: " << in << std::endl;
+                    std::cout << "n: " << n << std::endl;
+                    std::cout << std::endl;
+                }
                 break;
             }
         }
@@ -112,23 +121,25 @@ void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> inter
 
 int main ()
 {
-    std::vector<std::string> data = load_data("test_data.txt");
-    std::cout << data[0] << std::endl;
+    std::vector<std::string> data = load_data("data.txt");
+    // std::cout << data[0] << std::endl;
     std::vector<std::vector<int>> v = apply_find_ints(data);
-    auto intersections = find_all_intersect(v, 10);
+    auto intersections = find_all_intersect(v, 2000000);
+    // auto intersections = find_all_intersect(v, 10);
 
     int x_min = find_min_x(v);
     int x_max = find_max_x(v);
     std::cout << "x_min: " << x_min << std::endl;
     std::cout << "x_max: " << x_max << std::endl;
-    no_possible_beacon(-1000, 1000, intersections);
-
+    no_possible_beacon(x_min, x_max, intersections);
 
     // Test things:
     return 0;
 }
 
-
+// 6345457-1 is not the answer
+// Weirdly - when x_max increases by 1, result is increasing by one. 
+// This is not happening when x_min is decreased
 
 
 
