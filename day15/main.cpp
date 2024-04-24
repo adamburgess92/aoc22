@@ -80,32 +80,52 @@ int find_stop(const std::vector<std::vector<int>>& v_intersections)
     return max_x;
 }
 
-void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> intersections)
+int no_possible_beacon(int start, int stop, std::vector<std::vector<int>> signals_beacons, std::vector<std::vector<int>> intersections, int line)
 {
+    // Create vector of existing non-distress beacons on line: 
+    std::vector<int> non_distress_x;
+    for (const auto& row : signals_beacons)
+    {
+        if (row[3]==line) { // If Y coord==line
+            std::cout << "Existing non-distress beacon at: " << row[2] << ", " << row[3] << std::endl;
+            non_distress_x.push_back(row[2]); // Add X coord to vector
+        }
+    }
     int n=0;
     for (int i=start; i<=stop; ++i){
-        for (int j=0; j!=intersections.size(); ++j){
-            int x_a = intersections[j][0];
-            int x_b = intersections[j][1];
-            bool in=false;
+        // Check that there is no non distress beacon at this point: 
+        bool non_distress_beacon = false;
+        for (const int& x : non_distress_x){
+            if (i==x){
+                non_distress_beacon = true;
+                break;
+            }
+        }
+        if (non_distress_beacon){ // Can't be a possible distress beacon location, so move on.
+            continue; 
+        }
+        for (const std::vector<int>& row : intersections){
+            int x_a = row[0];
+            int x_b = row[1];
             if (i>=x_a && i<=x_b) {
-                in = true;
                 ++n;
                 break;
             }
         }
     }
-    std::cout << "res: " << n << std::endl;
-    std::cout << "res-1: " << n-1 << std::endl; // Because row contains a beacon already
+    return n;
 }
 
 int main ()
 {
     std::vector<std::string> data = load_data("data.txt");
-    std::vector<std::vector<int>> v = apply_find_ints(data);
-    std::vector<std::vector<int>> intersections = find_intersections(v, 2000000);
+    std::vector<std::vector<int>> signals_beacons = apply_find_ints(data);
+    std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, 2000000);
     int start = find_start(intersections);
     int stop = find_stop(intersections);
-    no_possible_beacon(start, stop, intersections);
+    int res = no_possible_beacon(start, stop, signals_beacons, intersections, 2000000);
+    std::cout << res << std::endl;
     return 0;
 }
+
+// 5299855 is the correct answer to part 1
