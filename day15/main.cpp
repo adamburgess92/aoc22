@@ -1,9 +1,7 @@
-#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <regex>
 #include "Parser.h"
-
 
 std::vector<int> find_ints(const std::string& s)
 {
@@ -42,7 +40,7 @@ std::vector<std::vector<int>> find_intersections(const std::vector<std::vector<i
         int s_y = row[1];
         int b_x = row[2];
         int b_y = row[3];
-        int m_dist = abs(b_y-s_y) + abs(b_x-s_x); // This is correct
+        int m_dist = abs(b_y-s_y) + abs(b_x-s_x);
         int y_dist = abs(line - s_y); 
         if (y_dist > m_dist){
             std::cout << "Signal at " << s_x << ", " << s_y << " does not reach row " << line << std::endl;
@@ -58,10 +56,9 @@ std::vector<std::vector<int>> find_intersections(const std::vector<std::vector<i
     return v_out;
 }
 
-
 int find_start(const std::vector<std::vector<int>>& v_intersections)
 {
-    int min_x = 0;
+    int min_x = 0; // Bad practice, but we can see from the data that min_x < 0
     for (int i=0; i<v_intersections.size(); ++i){
         int a = v_intersections[i][0];
         if (a<min_x){
@@ -105,7 +102,6 @@ void no_possible_beacon(int start, int stop, std::vector<std::vector<int>> inter
 int main ()
 {
     std::vector<std::string> data = load_data("data.txt");
-    // std::cout << data[0] << std::endl;
     std::vector<std::vector<int>> v = apply_find_ints(data);
     std::vector<std::vector<int>> intersections = find_intersections(v, 2000000);
     int start = find_start(intersections);
@@ -113,15 +109,3 @@ int main ()
     no_possible_beacon(start, stop, intersections);
     return 0;
 }
-
-// 6582242 is not the answer
-// 6582243 is not the answer - too high
-// 6345457-1 is not the answer - too high
-// Weirdly - when x_max increases by 1, result is increasing by one. 
-// This is not happening when x_min is decreased
-
-
-
-/*
-Just need to remove Beacons in row 10
-*/
