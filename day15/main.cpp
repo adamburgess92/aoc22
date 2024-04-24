@@ -87,11 +87,9 @@ int num_possible_beacon(int start, int stop, std::vector<std::vector<int>> signa
     for (const auto& row : signals_beacons)
     {
         if (row[1]==line) { // If Y coord of sensor==line
-            // std::cout << "Existing sensor at: " << row[0] << ", " << row[1] << std::endl;
             existing_signal_beacon.push_back(row[0]); // Add X coord to vector
         }
         if (row[3]==line) { // If Y coord of beacon==line
-            // std::cout << "Existing non-distress beacon at: " << row[2] << ", " << row[3] << std::endl;
             existing_signal_beacon.push_back(row[2]); // Add X coord to vector
         }
     }
@@ -99,14 +97,17 @@ int num_possible_beacon(int start, int stop, std::vector<std::vector<int>> signa
     for (int i=start; i<=stop; ++i){
         // Check that there is no non distress beacon at this point: 
         bool non_distress_beacon = false;
+        bool impossible = false;
         for (const int& x : existing_signal_beacon){
             if (i==x){
                 non_distress_beacon = true;
+                impossible = true;
                 break;
             }
         }
         if (non_distress_beacon){ // Can't be a possible distress beacon location, so move on.
             ++n;
+            impossible = true;
             continue; 
         }
         for (const std::vector<int>& row : intersections){
@@ -114,8 +115,17 @@ int num_possible_beacon(int start, int stop, std::vector<std::vector<int>> signa
             int x_b = row[1];
             if (i>=x_a && i<=x_b) {
                 ++n;
+                impossible = true;
                 break;
             }
+        }
+        if (!impossible) {
+            std::cout << line << std::endl;
+            std::cout << i << std::endl;
+            std::cout << "Distress signal found at " << line << ", " << i << std::endl;
+            std::cout << "Frequency: " << line + i*4000000 << std::endl;
+            return 0;
+            break;
         }
     }
     return n;
@@ -133,13 +143,11 @@ int main ()
     int res = num_possible_beacon(start, stop, signals_beacons, intersections, line);
     std::cout << res << std::endl;
 
-    for (int i=0; i<20-1; ++i){
+    for (int i=0; i<20; ++i){
         std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, i);
         int n = num_possible_beacon(0, 19, signals_beacons, intersections, i);
-        std::cout << "Y=" << i << " has " << n << " impossible beacon locations" << std::endl;
+        // std::cout << "Y=" << i << " : " << n << std::endl;
     }
-
-
     return 0;
 }
 
