@@ -43,13 +43,13 @@ std::vector<std::vector<int>> find_intersections(const std::vector<std::vector<i
         int m_dist = abs(b_y-s_y) + abs(b_x-s_x);
         int y_dist = abs(line - s_y); 
         if (y_dist > m_dist){
-            std::cout << "Signal at " << s_x << ", " << s_y << " does not reach row " << line << std::endl;
+            // std::cout << "Signal at " << s_x << ", " << s_y << " does not reach row " << line << std::endl;
             continue;
         }
         int x_dist = abs(y_dist-m_dist);
         int x_a = s_x - x_dist;
         int x_b = s_x + x_dist;
-        std::cout << "Signal at " << s_x << ", " << s_y << " meets line at " << x_a << ", " << x_b << std::endl;
+        // std::cout << "Signal at " << s_x << ", " << s_y << " meets line at " << x_a << ", " << x_b << std::endl;
         std::vector<int> v_pair {x_a, x_b};
         v_out.push_back(v_pair);
     }
@@ -80,28 +80,33 @@ int find_stop(const std::vector<std::vector<int>>& v_intersections)
     return max_x;
 }
 
-int no_possible_beacon(int start, int stop, std::vector<std::vector<int>> signals_beacons, std::vector<std::vector<int>> intersections, int line)
+int num_possible_beacon(int start, int stop, std::vector<std::vector<int>> signals_beacons, std::vector<std::vector<int>> intersections, int line)
 {
-    // Create vector of existing non-distress beacons on line: 
-    std::vector<int> non_distress_x;
+    // Create vector of existing non-distress beacons/sensors on line: 
+    std::vector<int> existing_signal_beacon;
     for (const auto& row : signals_beacons)
     {
-        if (row[3]==line) { // If Y coord==line
-            std::cout << "Existing non-distress beacon at: " << row[2] << ", " << row[3] << std::endl;
-            non_distress_x.push_back(row[2]); // Add X coord to vector
+        if (row[1]==line) { // If Y coord of sensor==line
+            // std::cout << "Existing sensor at: " << row[0] << ", " << row[1] << std::endl;
+            existing_signal_beacon.push_back(row[0]); // Add X coord to vector
+        }
+        if (row[3]==line) { // If Y coord of beacon==line
+            // std::cout << "Existing non-distress beacon at: " << row[2] << ", " << row[3] << std::endl;
+            existing_signal_beacon.push_back(row[2]); // Add X coord to vector
         }
     }
     int n=0;
     for (int i=start; i<=stop; ++i){
         // Check that there is no non distress beacon at this point: 
         bool non_distress_beacon = false;
-        for (const int& x : non_distress_x){
+        for (const int& x : existing_signal_beacon){
             if (i==x){
                 non_distress_beacon = true;
                 break;
             }
         }
         if (non_distress_beacon){ // Can't be a possible distress beacon location, so move on.
+            ++n;
             continue; 
         }
         for (const std::vector<int>& row : intersections){
@@ -118,13 +123,23 @@ int no_possible_beacon(int start, int stop, std::vector<std::vector<int>> signal
 
 int main ()
 {
-    std::vector<std::string> data = load_data("data.txt");
+    std::vector<std::string> data = load_data("test_data.txt");
+    // int line = 2000000;
+    int line = 10;
     std::vector<std::vector<int>> signals_beacons = apply_find_ints(data);
-    std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, 2000000);
+    std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, line);
     int start = find_start(intersections);
     int stop = find_stop(intersections);
-    int res = no_possible_beacon(start, stop, signals_beacons, intersections, 2000000);
+    int res = num_possible_beacon(start, stop, signals_beacons, intersections, line);
     std::cout << res << std::endl;
+
+    for (int i=0; i<20-1; ++i){
+        std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, i);
+        int n = num_possible_beacon(0, 19, signals_beacons, intersections, i);
+        std::cout << "Y=" << i << " has " << n << " impossible beacon locations" << std::endl;
+    }
+
+
     return 0;
 }
 
