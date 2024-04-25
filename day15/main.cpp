@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <regex>
@@ -97,38 +98,52 @@ int num_possible_beacon(int start, int stop, std::vector<std::vector<int>> signa
     for (int i=start; i<=stop; ++i){
         // Check that there is no non distress beacon at this point: 
         bool non_distress_beacon = false;
-        bool impossible = false;
         for (const int& x : existing_signal_beacon){
             if (i==x){
                 non_distress_beacon = true;
-                impossible = true;
                 break;
             }
         }
         if (non_distress_beacon){ // Can't be a possible distress beacon location, so move on.
             ++n;
-            impossible = true;
             continue; 
         }
+        // Otherwise, check that i is between intersection points:
         for (const std::vector<int>& row : intersections){
             int x_a = row[0];
             int x_b = row[1];
             if (i>=x_a && i<=x_b) {
                 ++n;
-                impossible = true;
                 break;
             }
         }
-        if (!impossible) {
-            std::cout << line << std::endl;
-            std::cout << i << std::endl;
-            std::cout << "Distress signal found at " << line << ", " << i << std::endl;
-            std::cout << "Frequency: " << line + i*4000000 << std::endl;
-            return 0;
-            break;
-        }
     }
     return n;
+}
+
+bool sort_by_first(const std::vector<int>& a,  const std::vector<int>& b){
+    return a[0] < b[0];
+};
+
+void part2(int start, int stop, const std::vector<std::vector<int>>& signals_beacons)
+{
+    // Iterate through row:
+    for (int y=start; y<=stop; ++y){ // Row
+        // Find intersections with this row: 
+        auto intersections = find_intersections(signals_beacons, y);
+        // Sort intersections: 
+        std::sort(intersections.begin(), intersections.end(), sort_by_first);
+        std::cout << "Intersections: " << std::endl;
+        for (int i=0; i!=intersections.size(); ++i){
+            std::cout << intersections[i][0] << ", " << intersections[i][1] << std::endl;
+        }
+        // Iterate over cols, skipping ahead where possible
+        int x = start; 
+        while (x<stop){
+            std::cout << "x=" << x << ", y=" << y << std::endl;
+            ++x;
+        }
+    }
 }
 
 int main ()
@@ -140,15 +155,11 @@ int main ()
     std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, line);
     int start = find_start(intersections);
     int stop = find_stop(intersections);
-    int res = num_possible_beacon(start, stop, signals_beacons, intersections, line);
-    std::cout << res << std::endl;
-
-    for (int i=0; i<20; ++i){
-        std::vector<std::vector<int>> intersections = find_intersections(signals_beacons, i);
-        int n = num_possible_beacon(0, 19, signals_beacons, intersections, i);
-        // std::cout << "Y=" << i << " : " << n << std::endl;
-    }
+    // int res = num_possible_beacon(start, stop, signals_beacons, intersections, line);
+    // std::cout << res << std::endl;
+    part2(0, 20, signals_beacons);
     return 0;
 }
 
 // 5299855 is the correct answer to part 1
+// 5289444 too low
