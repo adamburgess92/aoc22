@@ -40,6 +40,3 @@ m = {
         "tunnel" : ["II"]
     }
 }
-
-def potential_pressure_release(m, t):
-    t_remain = 30-t
