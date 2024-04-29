@@ -180,6 +180,5 @@ int main ()
     return 0;
 }
 
-// 796961409 too low
+// 796961409 too low part 2
 // 5299855 is the correct answer to part 1
-// 5289444 too low
