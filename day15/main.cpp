@@ -133,22 +133,41 @@ void part2(int start, int stop, const std::vector<std::vector<int>>& signals_bea
         auto intersections = find_intersections(signals_beacons, y);
         // Sort intersections: 
         std::sort(intersections.begin(), intersections.end(), sort_by_first);
-        std::cout << "Intersections: " << std::endl;
+        // std::cout << "Intersections: " << std::endl;
         for (int i=0; i!=intersections.size(); ++i){
-            std::cout << intersections[i][0] << ", " << intersections[i][1] << std::endl;
+            // std::cout << intersections[i][0] << ", " << intersections[i][1] << std::endl;
         }
         // Iterate over cols, skipping ahead where possible
-        int x = start; 
-        while (x<stop){
-            std::cout << "x=" << x << ", y=" << y << std::endl;
-            ++x;
+        int x = start;
+        while (x<=stop){
+            bool foundBeacon = false;
+            // std::cout << "x: " << x << " y: " << y << std::endl;
+            for (std::vector<int>& ix : intersections){
+                int x_a = ix[0];
+                int x_b = ix[1];
+                // std::cout << "x_a: " << x_a << " x_b: " << x_b << std::endl;
+                if (x>=x_a && x<=x_b){
+                    // std::cout << "Nothing at x=" << x << ", y=" << y << std::endl;
+                    ++x;
+                    foundBeacon = true;
+                    x = x_b+1;
+                    break;
+                }
+            }
+            if (!foundBeacon) {
+                std::cout << x*4000000+y << std::endl;
+                return;
+            }
+        }
+        if (y%10==0){
+            std::cout << y << "/4000000" << std::endl;
         }
     }
 }
 
 int main ()
 {
-    std::vector<std::string> data = load_data("test_data.txt");
+    std::vector<std::string> data = load_data("data.txt");
     // int line = 2000000;
     int line = 10;
     std::vector<std::vector<int>> signals_beacons = apply_find_ints(data);
@@ -157,9 +176,10 @@ int main ()
     int stop = find_stop(intersections);
     // int res = num_possible_beacon(start, stop, signals_beacons, intersections, line);
     // std::cout << res << std::endl;
-    part2(0, 20, signals_beacons);
+    part2(0, 4000000, signals_beacons);
     return 0;
 }
 
+// 796961409 too low
 // 5299855 is the correct answer to part 1
 // 5289444 too low
