@@ -20,7 +20,27 @@ struct Node {
 class Filesystem {
 public: 
     Node current_dir;
-    
+};
+
+bool is_ls(std::string s_in){
+    return s_in.substr(0, 4) == "$ ls";
+}
+
+bool is_cd(std::string s_in){
+    return s_in.substr(0, 4) == "$ cd";
+}
+
+void determine_action(std::string s_in){
+    if (is_ls(s_in)){
+        //
+    }
+    if (is_cd(s_in)){
+        //
+    }
+    // Otherwise don't worry, just move on:
+    else {
+        return;
+    }
 }
 
 int main()
