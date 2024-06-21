@@ -57,18 +57,23 @@ int main()
     - 23409234 -> file size 
     */
 
-   // Test Node struct
-   Node* root = new Node("/");
+    // Test Node struct
+    Node* root = new Node("/");
 
-   Node* child1 = new Node("foo");
-   Node* child2 = new Node("bar");
-   Node* child3 = new Node("baz");
+    Node* child1 = new Node("foo");
+    Node* child2 = new Node("bar");
+    Node* child3 = new Node("baz");
 
-   root->children.push_back(child1);
-   root->children.push_back(child2);
-   child2->children.push_back(child3);
+    root->children.push_back(child1);
+    root->children.push_back(child2);
+    child2->children.push_back(child3);
+
+    // Process commands: 
+    for (const std::string& s : data){
 
 
-   
+    }
+    
+
     
 }
