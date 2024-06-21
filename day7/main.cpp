@@ -42,6 +42,29 @@ bool is_cd(std::string s_in){
     return s_in.substr(0, 4) == "$ cd";
 }
 
+// std::vector<std::string> process_input(const std::vector<std::string> in){
+void process_input(const std::vector<std::string> in){
+    int i = 1;
+    std::string next_entry = in[i];
+    if (is_cd(next_entry)) {
+        std::cout << next_entry << std::endl;
+        return;
+        // return next_entry;
+    }
+    if (is_ls(next_entry)){
+        // Keep going until hit another command: 
+        std::vector<std::string> x;
+        while (!is_ls(in[i+1]) & !is_cd(in[i+1])){
+            ++i;
+            next_entry = in[i];
+            x.push_back(next_entry);
+        }
+        for (const std::string& j : x) {
+            std::cout << j << std::endl;
+        }
+    }
+}
+
 void process_ls(const std::vector<std::string>& s_ls, Node* current_node){
     for (const std::string& s : s_ls){
         // While not another command...
@@ -76,6 +99,8 @@ void perform_action(std::string s_in){
     }
 }
 
+
+
 int main()
 {
     std::vector<std::string> data = parse_data("test_data.txt");
@@ -90,23 +115,23 @@ int main()
     - 23409234 -> file size 
     */
 
-    // Test Node struct
-    Node* root = new Node("/");
+    // // Test Node struct
+    // Node* root = new Node("/");
 
-    Node* child1 = new Node("foo");
-    Node* child2 = new Node("bar");
-    Node* child3 = new Node("baz");
+    // Node* child1 = new Node("foo");
+    // Node* child2 = new Node("bar");
+    // Node* child3 = new Node("baz");
 
-    root->children.push_back(child1);
-    root->children.push_back(child2);
-    child2->children.push_back(child3);
+    // root->children.push_back(child1);
+    // root->children.push_back(child2);
+    // child2->children.push_back(child3);
 
-    // Process commands: 
-    for (const std::string& s : data){
-        perform_action(s);
+    // // Process commands: 
+    // for (const std::string& s : data){
+    //     perform_action(s);
 
-    }
+    // }
+    process_input(data);
     
-
-    
+    return 0;
 }
