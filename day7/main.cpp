@@ -11,19 +11,19 @@
 // What is the sum of the total sizes of those directories?
 
 struct File {
-    std::string filename;
-    int filesize;
+    std::string name;
+    int size;
     // Constructor: 
-    File(std::string filename, int filesize) : filename(filename), filesize(filesize) {}
+    File(std::string name, int size) : name(name), size(size) {}
 };
 
-struct Node {
-    std::string dir;
-    Node* parent;
-    std::vector<Node*> children;
+struct Directory {
+    std::string name;
+    Directory* parent;
+    std::vector<Directory*> subdirectories;
     std::vector<File> files;
     // Constructor: 
-    Node(std::string val) : dir(val) {};
+    Directory(std::string s) : name(s) {};
 };
 
 // class Filesystem {
@@ -46,35 +46,35 @@ bool is_uplevel(std::string s_in){
     return s_in == "$ cd ..";
 }
 
-void process_ls_output(const std::vector<std::string>& s_ls, Node* current_node){
+void process_ls_output(const std::vector<std::string>& s_ls, Directory* current_directory){
     for (const std::string& s : s_ls){
-        // While not another command...
+        // If it's a directory...
         if (s.substr(0, 3) == "dir") {
             std::string dir_name = s.substr(s.find(" "), s.length());
-            Node* newdir = new Node(dir_name);
-            current_node->children.push_back(newdir);
+            Directory* newdir = new Directory(dir_name);
+            current_directory->subdirectories.push_back(newdir);
         }
         // If it's a file...
         else {
             int filesize = std::stoi(s.substr(0, s.find(" ")));
             std::string filename = s.substr(s.find(" "), s.length());
             File newfile(filename, filesize);
-            current_node->files.push_back(newfile);
+            current_directory->files.push_back(newfile);
         }
     }
 }
 
-void process_cd_output(const std::string& s_cd, Node* current_node){
+void process_cd_output(const std::string& s_cd, Directory* current_node){
     // Dp we even need this?
 }
 
 void process_terminal_output(const std::vector<std::string> in){
     int i = 1; // Skip first line - we always start at root
-    Node* current_dir = new Node("/");
+    Directory* current_dir = new Directory("/");
     while (i<=in.size()) {
         std::string next_entry = in[i];
         std::cout << "Next entry: " << next_entry << std::endl;
-        std::cout << "Current directory: " << current_dir->dir << std::endl;
+        std::cout << "Current directory: " << current_dir->name << std::endl;
         if (is_uplevel(next_entry)) {
             std::cout << "Moving up a level" << std::endl;
             current_dir = current_dir->parent;
