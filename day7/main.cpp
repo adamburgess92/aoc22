@@ -6,10 +6,6 @@
 #include <algorithm>
 #include "parser.h"
 
-
-// Part 1: Find all of the directories with a total size of at most 100000.
-// What is the sum of the total sizes of those directories?
-
 struct File {
     std::string name;
     int size;
@@ -95,23 +91,37 @@ public:
         // std::cout << "Directory " << dir->name << " has size " << size_all_files << std::endl;
         return size_all_files;
     }
-    void traverse(Directory* dir){
+    int traverse(Directory* dir){
         int size_files_in_current_dir = calculate_directory_size(dir);
-        // pt_1_size+=size_files_in_current_dir;
+        int size_files_in_subdirectories = 0;
+        for (const auto& d : dir->subdirectories) {
+            size_files_in_subdirectories += traverse(d);
+        }
+        size_files_in_current_dir += size_files_in_subdirectories;
         if (size_files_in_current_dir<=100000){
             std::cout << "Including directory: " << dir->name << " with size " << size_files_in_current_dir << std::endl;
             pt_1_size+=size_files_in_current_dir;
         }
-        for (const auto& d : dir->subdirectories) {
-            traverse(d);
-        }
+        return size_files_in_current_dir;
     }
+
+    // void traverse(Directory* dir){
+    //     int size_files_in_current_dir = calculate_directory_size(dir);
+    //     // pt_1_size+=size_files_in_current_dir;
+    //     if (size_files_in_current_dir<=100000){
+    //         std::cout << "Including directory: " << dir->name << " with size " << size_files_in_current_dir << std::endl;
+    //         pt_1_size+=size_files_in_current_dir;
+    //     }
+    //     for (const auto& d : dir->subdirectories) {
+    //         traverse(d);
+    //     }
+    // }
 };
 
 int main()
 {
     // Load data
-    std::vector<std::string> data = parse_data("data.txt");
+    std::vector<std::string> data = parse_data("test_data.txt");
     // Skip first line and instantiate FileSystem with root directory:
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
