@@ -30,6 +30,7 @@ class FileSystem {
 public:
     Directory* root;
     Directory* current_directory;
+    int pt_1_size = 0;
     // Constructor: 
     FileSystem(std::string rootdir) {
         root = new Directory(rootdir);
@@ -85,19 +86,24 @@ public:
             }
         }
     }
-    void calculate_directory_sizes(){
-        // Go to root: 
-        current_directory = root;
-        std::cout << "Directories: " << std::endl;
-        for (const auto& s : current_directory->subdirectories) {
-            std::cout << s->name << std::endl;
+    int calculate_directory_size(Directory* dir){
+        int size_all_files = 0;
+        for (const auto& f : dir->files) {
+            size_all_files += f->size;
         }
-        std::cout << "Files: " << std::endl;
-        for (const auto& f : current_directory->files) {
-            std::cout << f->name << std::endl;
+        // std::cout << size_all_files << std::endl;
+        std::cout << "Directory " << dir->name << " has size " << size_all_files << std::endl;
+        return size_all_files;
+    }
+    void traverse(Directory* dir){
+        int size_files_in_current_dir = calculate_directory_size(dir);
+        if (size_files_in_current_dir>=100000){
+            pt_1_size+=size_files_in_current_dir;
+        }
+        for (const auto& d : dir->subdirectories) {
+            traverse(d);
         }
     }
-
 };
 
 int main()
@@ -108,33 +114,10 @@ int main()
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
     fs.process_terminal_output(term_output);
-    fs.calculate_directory_sizes();
-
-    
-    
-    // Testing things:
-    /*
-    // dir a
-    fs.add_directory("dir a");
-    // 14848514 b.txt
-    fs.add_file("14848514 b.txt");
-    // 8504156 c.dat
-    fs.add_file("8504156 c.dat");
-    // dir d
-    fs.add_directory("dir d");
-    // $ cd a
-    // fs.change_directory("$ cd a");
-    // $ cd ..
-    std::cout << "current directory: " << fs.current_directory->name << std::endl;
-    // std::cout << "parent directory: " << fs.parent_directory->name << std::endl;
-    fs.change_directory("$ cd d");
-    std::cout << "current directory: " << fs.current_directory->name << std::endl;
-    fs.add_directory("dir e");
-    fs.change_directory("$ cd e");
-    std::cout << "current directory: " << fs.current_directory->name << std::endl;
-    fs.up_level();
-    std::cout << "current directory: " << fs.current_directory->name << std::endl;
-    */
+    // Go back to root: 
+    fs.current_directory = fs.root;
+    fs.traverse(fs.current_directory);
+    std::cout << fs.pt_1_size << std::endl;
 }
 
 
