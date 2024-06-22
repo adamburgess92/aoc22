@@ -85,6 +85,18 @@ public:
             }
         }
     }
+    void calculate_directory_sizes(){
+        // Go to root: 
+        current_directory = root;
+        std::cout << "Directories: " << std::endl;
+        for (const auto& s : current_directory->subdirectories) {
+            std::cout << s->name << std::endl;
+        }
+        std::cout << "Files: " << std::endl;
+        for (const auto& f : current_directory->files) {
+            std::cout << f->name << std::endl;
+        }
+    }
 
 };
 
@@ -96,6 +108,7 @@ int main()
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
     fs.process_terminal_output(term_output);
+    fs.calculate_directory_sizes();
 
     
     
