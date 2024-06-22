@@ -19,97 +19,71 @@ struct File {
 
 struct Directory {
     std::string name;
-    Directory* parent;
     std::vector<Directory*> subdirectories;
     std::vector<File> files;
     // Constructor: 
     Directory(std::string s) : name(s) {};
 };
 
-// class Filesystem {
-// public: 
-//     Node root_node;
-//     Node current_dir;
-//     Filesystem() {}
-    
-// };
-
-bool is_ls(std::string s_in){
-    return s_in.substr(0, 4) == "$ ls";
+Directory* add_file(std::string s_file, Directory* current_directory){
+    int filesize = std::stoi(s_file.substr(0, s_file.find(" ")));
+    std::string filename = s_file.substr(s_file.find(" ")+1, s_file.length());
+    File newfile(filename, filesize);
+    current_directory->files.push_back(newfile);
+    return current_directory;
 }
 
-bool is_cd(std::string s_in){
-    return s_in.substr(0, 4) == "$ cd";
+Directory* add_directory(std::string s_directory, Directory* current_directory){
+    std::string directory_name = s_directory.substr(s_directory.find(" ")+1, s_directory.length());
+    Directory* newdir = new Directory(directory_name);
+    current_directory->subdirectories.push_back(newdir);
+    // Return pointer to current directory
+    return current_directory;
 }
 
-bool is_uplevel(std::string s_in){
-    return s_in == "$ cd ..";
-}
-
-void process_ls_output(const std::vector<std::string>& s_ls, Directory* current_directory){
-    for (const std::string& s : s_ls){
-        // If it's a directory...
-        if (s.substr(0, 3) == "dir") {
-            std::string dir_name = s.substr(s.find(" "), s.length());
-            Directory* newdir = new Directory(dir_name);
-            current_directory->subdirectories.push_back(newdir);
-        }
-        // If it's a file...
-        else {
-            int filesize = std::stoi(s.substr(0, s.find(" ")));
-            std::string filename = s.substr(s.find(" "), s.length());
-            File newfile(filename, filesize);
-            current_directory->files.push_back(newfile);
+void change_directory(std::string cd_string, Directory* current_directory){
+    // Directory name: 
+    std::string dir_name = cd_string.substr(cd_string.find("cd")+3, cd_string.length());
+    // Check if directory already exists:
+    bool dir_exists = false;
+    for (const auto& subdir : current_directory->subdirectories){
+        if (dir_name == subdir->name) {
+            std::cout << "Directory already exists" << std::endl;
+            dir_exists = true;
+            break;
         }
     }
-}
-
-void process_cd_output(const std::string& s_cd, Directory* current_node){
-    // Dp we even need this?
-}
-
-void process_terminal_output(const std::vector<std::string> in){
-    int i = 1; // Skip first line - we always start at root
-    Directory* current_dir = new Directory("/");
-    while (i<=in.size()) {
-        std::string next_entry = in[i];
-        std::cout << "Next entry: " << next_entry << std::endl;
-        std::cout << "Current directory: " << current_dir->name << std::endl;
-        if (is_uplevel(next_entry)) {
-            std::cout << "Moving up a level" << std::endl;
-            current_dir = current_dir->parent;
-            ++i;
-            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-        }
-        if (is_cd(next_entry)) {
-            // return next_entry;
-            std::cout << "Changing directory" << std::endl;
-            ++i;
-            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-        }
-        if (is_ls(next_entry)){
-            std::cout << "Listing directory contents" << std::endl;
-            // Keep going until hit another command: 
-            std::vector<std::string> ls_output;
-            while (!is_ls(in[i+1]) & !is_cd(in[i+1])){
-                ++i;
-                next_entry = in[i];
-                ls_output.push_back(next_entry);
-            }
-            // 
-            for (const std::string& j : ls_output) {
-                std::cout << j << std::endl;
-            }
-            process_ls_output(ls_output, current_dir);
-            ++i;
-            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
-        }
+    // If it doesn't exist, create new directory
+    if (!dir_exists) {
+        std::cout << "Creating new directory" << std::endl;
+        current_directory = add_directory(dir_name, current_directory);
     }
+    // Change directory: 
+
+
 }
 
 int main()
 {
-    std::vector<std::string> data = parse_data("test_data.txt");
-    process_terminal_output(data);
-    return 0;
+    // std::vector<std::string> data = parse_data("test_data.txt");
+    // process_terminal_output(data);
+    // return 0;
+
+    // Directory* current_directory;
+    // Skip first line, crete root directory:
+    Directory* current_directory = new Directory("/");
+    // $ ls - do nothing:
+    // dir a
+    current_directory = add_directory("dir a", current_directory);
+    // 14848514 b.txt
+    current_directory = add_file("14848514 b.txt", current_directory);
+    // 8504156 c.dat
+    current_directory = add_file("8504156 c.dat", current_directory);
+    // dir d
+    current_directory = add_directory("dir d", current_directory);
+    // $ cd a
+    change_directory("$ cd a", current_directory);
+    change_directory("$ cd ..", current_directory);
+
+
 }
