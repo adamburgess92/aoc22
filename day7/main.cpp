@@ -104,24 +104,12 @@ public:
         }
         return size_files_in_current_dir;
     }
-
-    // void traverse(Directory* dir){
-    //     int size_files_in_current_dir = calculate_directory_size(dir);
-    //     // pt_1_size+=size_files_in_current_dir;
-    //     if (size_files_in_current_dir<=100000){
-    //         std::cout << "Including directory: " << dir->name << " with size " << size_files_in_current_dir << std::endl;
-    //         pt_1_size+=size_files_in_current_dir;
-    //     }
-    //     for (const auto& d : dir->subdirectories) {
-    //         traverse(d);
-    //     }
-    // }
 };
 
 int main()
 {
     // Load data
-    std::vector<std::string> data = parse_data("test_data.txt");
+    std::vector<std::string> data = parse_data("data.txt");
     // Skip first line and instantiate FileSystem with root directory:
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
@@ -130,10 +118,6 @@ int main()
     fs.current_directory = fs.root;
     fs.traverse(fs.current_directory);
     std::cout << fs.pt_1_size << std::endl;
-
-
-    // 39065894 <- too high
-    // 1969677 <- too high
 }
 
 
