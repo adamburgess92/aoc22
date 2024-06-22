@@ -92,13 +92,14 @@ public:
             size_all_files += f->size;
         }
         // std::cout << size_all_files << std::endl;
-        std::cout << "Directory " << dir->name << " has size " << size_all_files << std::endl;
+        // std::cout << "Directory " << dir->name << " has size " << size_all_files << std::endl;
         return size_all_files;
     }
     void traverse(Directory* dir){
         int size_files_in_current_dir = calculate_directory_size(dir);
         // pt_1_size+=size_files_in_current_dir;
-        if (size_files_in_current_dir>=100000){
+        if (size_files_in_current_dir<=100000){
+            std::cout << "Including directory: " << dir->name << " with size " << size_files_in_current_dir << std::endl;
             pt_1_size+=size_files_in_current_dir;
         }
         for (const auto& d : dir->subdirectories) {
@@ -122,6 +123,7 @@ int main()
 
 
     // 39065894 <- too high
+    // 1969677 <- too high
 }
 
 
