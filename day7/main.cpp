@@ -14,69 +14,82 @@ struct File {
     std::string name;
     int size;
     // Constructor: 
-    File(std::string name, int size) : name(name), size(size) {}
+    File(std::string name, int size) : name(name), size(size) {};
 };
 
 struct Directory {
     std::string name;
     std::vector<Directory*> subdirectories;
-    std::vector<File> files;
+    std::vector<File*> files;
     // Constructor: 
     Directory(std::string s) : name(s) {};
 };
 
-Directory* add_file(std::string s_file, Directory* current_directory){
-    int filesize = std::stoi(s_file.substr(0, s_file.find(" ")));
-    std::string filename = s_file.substr(s_file.find(" ")+1, s_file.length());
-    File newfile(filename, filesize);
-    current_directory->files.push_back(newfile);
-    return current_directory;
-}
-
-Directory* add_directory(std::string s_directory, Directory* current_directory){
-    std::string directory_name = s_directory.substr(s_directory.find(" ")+1, s_directory.length());
-    Directory* newdir = new Directory(directory_name);
-    current_directory->subdirectories.push_back(newdir);
-    // Return pointer to current directory
-    return current_directory;
-}
-
-void change_directory(std::string cd_string, Directory* current_directory){
-    // Directory name: 
-    std::string dir_name = cd_string.substr(cd_string.find("cd")+3, cd_string.length());
-    // Check if directory already exists:
-    bool dir_exists = false;
-    for (const auto& subdir : current_directory->subdirectories){
-        if (dir_name == subdir->name) {
-            std::cout << "Directory already exists" << std::endl;
-            dir_exists = true;
-            break;
-        }
-    }
-    // If it doesn't exist, create new directory
-    if (!dir_exists) {
-        std::cout << "Creating new directory" << std::endl;
-        current_directory = add_directory(dir_name, current_directory);
+class FileSystem {
+public:
+    Directory* root;
+    Directory* current_directory;
+    Directory* parent_directory;
+    // Constructor: 
+    FileSystem(std::string rootdir) {
+        root = new Directory(rootdir);
+        current_directory = root;
+        parent_directory = nullptr;
     }
     // Change directory: 
-
-
-}
+    void change_directory(std::string cd_string){
+        if (cd_string=="$ cd .."){
+            current_directory = parent_directory;
+            return;
+        }
+        // Directory name: 
+        std::string dir_name = cd_string.substr(cd_string.find("cd")+3, cd_string.length());
+        // Check if directory already exists:
+        bool dir_exists = false;
+        for (const auto& subdir : current_directory->subdirectories){
+            if (dir_name == subdir->name) {
+                std::cout << "Directory already exists" << std::endl;
+                dir_exists = true;
+                break;
+            }
+        }
+        // If it doesn't exist, create new directory
+        if (!dir_exists) {
+            std::cout << "Creating new directory" << std::endl;
+            add_directory(dir_name);
+        }
+        // Change directory: 
+        parent_directory = current_directory;
+    }
+    void add_file(std::string s_file){
+        int filesize = std::stoi(s_file.substr(0, s_file.find(" ")));
+        std::string filename = s_file.substr(s_file.find(" ")+1, s_file.length());
+        File* newfile = new File(filename, filesize);
+        current_directory->files.push_back(newfile);
+    }
+    void add_directory(std::string s_directory){
+        std::string directory_name = s_directory.substr(s_directory.find(" ")+1, s_directory.length());
+        Directory* newdir = new Directory(directory_name);
+        current_directory->subdirectories.push_back(newdir);
+    }
+};
 
 int main()
 {
     // std::vector<std::string> data = parse_data("test_data.txt");
-    // process_terminal_output(data);
-    // return 0;
-
-    // Directory* current_directory;
-    // Skip first line, crete root directory:
-    Directory* current_directory = new Directory("/");
+    
+    FileSystem fs = FileSystem("/");
+    std::cout << fs.current_directory->name << std::endl;
     // $ ls - do nothing:
     // dir a
-    current_directory = add_directory("dir a", current_directory);
+    fs.add_directory("dir a");
     // 14848514 b.txt
-    current_directory = add_file("14848514 b.txt", current_directory);
+    fs.add_file("14848514 b.txt");
+    
+
+
+
+    /*
     // 8504156 c.dat
     current_directory = add_file("8504156 c.dat", current_directory);
     // dir d
@@ -84,6 +97,7 @@ int main()
     // $ cd a
     change_directory("$ cd a", current_directory);
     change_directory("$ cd ..", current_directory);
+    */
 
 
 }
