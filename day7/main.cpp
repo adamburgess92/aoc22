@@ -19,6 +19,7 @@ struct File {
 
 struct Directory {
     std::string name;
+    Directory* parent_directory;
     std::vector<Directory*> subdirectories;
     std::vector<File*> files;
     // Constructor: 
@@ -29,12 +30,13 @@ class FileSystem {
 public:
     Directory* root;
     Directory* current_directory;
-    Directory* parent_directory;
+    // Directory* parent_directory;
     // Constructor: 
     FileSystem(std::string rootdir) {
         root = new Directory(rootdir);
+        root->parent_directory = nullptr;
         current_directory = root;
-        parent_directory = nullptr;
+        // parent_directory = nullptr;
     }
     void add_file(std::string s_file){
         int filesize = std::stoi(s_file.substr(0, s_file.find(" ")));
@@ -48,22 +50,18 @@ public:
         current_directory->subdirectories.push_back(newdir);
     }
     void change_directory(std::string s_cd){
-        Directory* tmp_current; 
-        Directory* tmp_parent;
+        Directory* tmp_current = current_directory; 
         std::string dir_name = s_cd.substr(s_cd.find("cd")+3, s_cd.length());
         for (int i=0; i<=current_directory->subdirectories.size(); ++i){
             if (dir_name==current_directory->subdirectories[i]->name){
                 current_directory = current_directory->subdirectories[i];
-                // parent_directory = tmp_current->name;
+                current_directory->parent_directory = tmp_current;
                 break;
             }
         }
     }
     void up_level(){
-        // Store temps: 
-        // Directory* tmp_current; 
-        // Directory* tmp_parent;
-        std::cout << "Parent directory: " << current_directory->name << std::endl;
+        current_directory = current_directory->parent_directory;
     }
 
 };
@@ -88,7 +86,12 @@ int main()
     // $ cd ..
     std::cout << "current directory: " << fs.current_directory->name << std::endl;
     // std::cout << "parent directory: " << fs.parent_directory->name << std::endl;
-    fs.change_directory("$ cd a");
+    fs.change_directory("$ cd d");
+    std::cout << "current directory: " << fs.current_directory->name << std::endl;
+    fs.add_directory("dir e");
+    fs.change_directory("$ cd e");
+    std::cout << "current directory: " << fs.current_directory->name << std::endl;
+    fs.up_level();
     std::cout << "current directory: " << fs.current_directory->name << std::endl;
     
     
