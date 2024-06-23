@@ -27,6 +27,8 @@ public:
     Directory* root;
     Directory* current_directory;
     int pt_1_size = 0;
+    int used_space;
+
     // Constructor: 
     FileSystem(std::string rootdir) {
         root = new Directory(rootdir);
@@ -87,15 +89,13 @@ public:
         for (const auto& f : dir->files) {
             size_all_files += f->size;
         }
-        // std::cout << size_all_files << std::endl;
-        // std::cout << "Directory " << dir->name << " has size " << size_all_files << std::endl;
         return size_all_files;
     }
-    int traverse(Directory* dir){
+    int traverse_pt1(Directory* dir){
         int size_files_in_current_dir = calculate_directory_size(dir);
         int size_files_in_subdirectories = 0;
         for (const auto& d : dir->subdirectories) {
-            size_files_in_subdirectories += traverse(d);
+            size_files_in_subdirectories += traverse_pt1(d);
         }
         size_files_in_current_dir += size_files_in_subdirectories;
         if (size_files_in_current_dir<=100000){
@@ -104,21 +104,43 @@ public:
         }
         return size_files_in_current_dir;
     }
+    void get_sum_all_files(Directory* dir){
+        int size_files_in_current_dir = calculate_directory_size(dir);
+        used_space += size_files_in_current_dir;
+        std::cout << "Dir " << dir->name << " has size " << size_files_in_current_dir << std::endl;
+        for (const auto& d : dir->subdirectories) {
+            get_sum_all_files(d);
+        }
+    }
+    int get_used_space(){
+        used_space = 0;
+        get_sum_all_files(root);
+        std::cout << "Used space: " << used_space << std::endl;
+        return used_space;
+    }
+    int get_unused_space(){
+        int used_space = get_used_space();
+        int unused_space = 70000000 - used_space;
+        std::cout << "Unused space = " << unused_space << std::endl;
+        return unused_space;
+    }
 };
 
 int main()
 {
     // Load data
-    std::vector<std::string> data = parse_data("data.txt");
+    std::vector<std::string> data = parse_data("test_data.txt");
     // Skip first line and instantiate FileSystem with root directory:
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
     fs.process_terminal_output(term_output);
-    // Go back to root: 
+    // Part 1: Go back to root: 
     fs.current_directory = fs.root;
-    fs.traverse(fs.current_directory);
-    std::cout << fs.pt_1_size << std::endl;
+    fs.traverse_pt1(fs.current_directory);
+    std::cout << "Part 1 result: " << fs.pt_1_size << std::endl;
+    // Get size, all files at /:
+    fs.get_used_space();
+    fs.get_unused_space();
+    fs.current_directory = fs.root;
+    return 0;
 }
-
-
-
