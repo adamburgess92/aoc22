@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <map>
 #include <string>
 #include <vector>
 #include <list>
@@ -28,7 +29,8 @@ public:
     Directory* current_directory;
     int pt_1_size = 0;
     int used_space;
-
+    int unused_space;
+    std::map<std::string, int> filsize_map;
     // Constructor: 
     FileSystem(std::string rootdir) {
         root = new Directory(rootdir);
@@ -108,6 +110,7 @@ public:
         int size_files_in_current_dir = calculate_directory_size(dir);
         used_space += size_files_in_current_dir;
         std::cout << "Dir " << dir->name << " has size " << size_files_in_current_dir << std::endl;
+        // Recursively move to subdirectories
         for (const auto& d : dir->subdirectories) {
             get_sum_all_files(d);
         }
@@ -120,27 +123,56 @@ public:
     }
     int get_unused_space(){
         int used_space = get_used_space();
-        int unused_space = 70000000 - used_space;
+        unused_space = 70000000 - used_space;
         std::cout << "Unused space = " << unused_space << std::endl;
         return unused_space;
+    }
+    int traverse_pt2(Directory* dir){
+        int size_files_in_current_dir = calculate_directory_size(dir);
+        int size_files_in_subdirectories = 0;
+        for (const auto& d : dir->subdirectories) {
+            size_files_in_subdirectories += traverse_pt2(d);
+        }
+        size_files_in_current_dir += size_files_in_subdirectories;
+        std::cout << "Directory: " << dir->name << " has size " << size_files_in_current_dir << std::endl;
+        // Add to map:
+        filsize_map[dir->name] = size_files_in_current_dir;
+        return size_files_in_current_dir;
+    }
+    void solve_pt2(){
+        int used_space = get_used_space();
+        int unused_space = get_unused_space();
+        int total_space = 70000000;
+        int need_space = 30000000;
+        int need_delete = need_space - unused_space;
+        int smallest = total_space;
+        for (const auto& pair : filsize_map){
+            if (pair.second >= need_delete) {
+                std::cout << pair.first << ": " << pair.second << std::endl;
+                if (pair.second < smallest){
+                    smallest = pair.second;
+                }
+            }
+        }
+        std::cout << "Smallest directory that could be deleted has size: " << smallest << std::endl;
     }
 };
 
 int main()
 {
     // Load data
-    std::vector<std::string> data = parse_data("test_data.txt");
+    std::vector<std::string> data = parse_data("data.txt");
     // Skip first line and instantiate FileSystem with root directory:
     FileSystem fs = FileSystem("/");
     std::vector<std::string> term_output(data.begin()+1, data.end());
     fs.process_terminal_output(term_output);
     // Part 1: Go back to root: 
     fs.current_directory = fs.root;
-    fs.traverse_pt1(fs.current_directory);
+    // fs.traverse_pt1(fs.current_directory);
     std::cout << "Part 1 result: " << fs.pt_1_size << std::endl;
-    // Get size, all files at /:
-    fs.get_used_space();
-    fs.get_unused_space();
+    // Part 2:
     fs.current_directory = fs.root;
+    fs.traverse_pt2(fs.current_directory);
+    fs.solve_pt2();
     return 0;
 }
